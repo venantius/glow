@@ -4,8 +4,16 @@
 ;; match-nil
 ;; match-bool
 
-;; match-vector?
-;; match-parens
+(defn match-regex
+  "Parse a string of source code and try to match on regex literals."
+  [s]
+  (re-find #"(?s:#\"[^\"].*\")|(?s:#\"\")" s))
+
+;; this currently picks up too much
+(defn match-string
+  "Parse a string of source code and try to match on string literals."
+  [s]
+  (first (re-find #"\"(\\.|[^\"])*\"" s)))
 
 (defn match-nil
   "Parse a string of source code and try to match on nil."
@@ -22,14 +30,7 @@
   [s]
   (re-find #"(?:;.*\n)" s))
 
-(defn match-regex
-  "Parse a string of source code and try to match on regex literals."
+(defn match-s-exp
+  "Parse a string of source code and try to match on s-expressions"
   [s]
-  (re-find #"(?s:#\"[^\"].*\")" s))
-
-(defn match-string
-  "Parse a string of source code and try to match on string literals."
-  [s]
-  (re-find #"(?s:\"[^\"].*\")" s))
-
-
+  (re-find #"(?:[\[\]\(\){}])" s))
