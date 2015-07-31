@@ -92,7 +92,7 @@
   [s]
   (re-find special-keyword-regex s))
 
-(defn match-definitions
+(defn match-definition
   "Match a clojure.core definition form."
   [s]
   (re-find definition-keyword-regex s))

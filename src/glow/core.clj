@@ -1,4 +1,4 @@
-(ns glow.core
+( glow.core
   (:require [glow.ansi :as ansi]
             [glow.regex :as regex]))
 
@@ -23,14 +23,14 @@
 (defn highlight-exceptions
   "Highlight Clojure exception keywords."
   [s]
-  (if-let [match (regex/match-exceptions s)]
+  (if-let [match (regex/match-exception s)]
     (colorize-and-recurse s match highlight-exceptions :green)
     s))
 
 (defn highlight-repeats
   "Highlight clojure.core repeat keywords."
   [s]
-  (if-let [match (regex/match-repeats s)]
+  (if-let [match (regex/match-repeat s)]
     (colorize-and-recurse s match highlight-repeats :green)
     (highlight-exceptions s)))
 
@@ -58,7 +58,7 @@
 (defn- highlight-definitions
   "Highlight definitions."
   [s]
-  (if-let [match (regex/match-definitions s)]
+  (if-let [match (regex/match-definition s)]
     (colorize-and-recurse s match highlight-definitions :orange)
     (highlight-core-fns s)))
 
