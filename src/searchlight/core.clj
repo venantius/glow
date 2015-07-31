@@ -19,12 +19,26 @@
   (let [[pre post] (split-in-two s match)]
     (str (callback pre) ((color ansi-fn-map) match) (callback post))))
 
+(defn- highlight-definitions
+  "Highlight definitions."
+  [s]
+  (if-let [match (regex/match-definitions s)]
+    (colorize-and-recurse s match highlight-definitions :orange)
+    s))
+
+(defn- highlight-special-forms
+  "Highlight special forms."
+  [s]
+  (if-let [match (regex/match-special s)]
+    (colorize-and-recurse s match highlight-special-forms :red)
+    (highlight-definitions s)))
+
 (defn- highlight-macros
   "Highlight macros."
   [s]
   (if-let [match (regex/match-macro s)]
     (colorize-and-recurse s match highlight-macros :orange)
-    s))
+    (highlight-special-forms s)))
 
 (defn- highlight-booleans
   "Highlight booleans."
@@ -62,14 +76,14 @@
     (highlight-keywords s)))
 
 (defn- highlight-strings
-  "Highlight string literals, recurse."
+  "Highlight string literals."
   [s]
   (if-let [match (regex/match-string s)]
     (colorize-and-recurse s match highlight-strings :cyan)
     (highlight-comments s)))
 
 (defn- highlight-regexes
-  "Highlight regular expression literals, recurse."
+  "Highlight regular expression literals."
   [s]
   (if-let [match (regex/match-regex s)]
     (colorize-and-recurse s match highlight-regexes :red)
