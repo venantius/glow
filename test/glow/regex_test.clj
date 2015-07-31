@@ -1,7 +1,7 @@
-(ns searchlight.regex-test
+(ns glow.regex-test
   (:require [clojure.java.io :as io]
             [clojure.test :refer :all]
-            [searchlight.regex :as regex]))
+            [glow.regex :as regex]))
 
 (deftest match-keyword-works
   (let [a (slurp (io/resource "test/regex/keywords/example_1.clj"))

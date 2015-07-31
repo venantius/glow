@@ -1,6 +1,6 @@
-(ns searchlight.core
-  (:require [searchlight.ansi :as ansi]
-            [searchlight.regex :as regex]))
+(ns glow.core
+  (:require [glow.ansi :as ansi]
+            [glow.regex :as regex]))
 
 (def ansi-fn-map
   {:blue ansi/blue

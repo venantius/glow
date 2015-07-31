@@ -1,4 +1,4 @@
-(ns searchlight.ansi
+(ns glow.ansi
   (:require [io.aviso.ansi :as ansi]))
 
 (defn orange

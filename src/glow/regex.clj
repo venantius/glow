@@ -1,4 +1,4 @@
-(ns searchlight.regex
+(ns glow.regex
   (:require [clojure.java.io :as io]))
 
 (defn keywords->regex-pattern
