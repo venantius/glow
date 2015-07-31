@@ -1,4 +1,4 @@
-( glow.core
+(ns glow.core
   (:require [glow.ansi :as ansi]
             [glow.regex :as regex]))
 

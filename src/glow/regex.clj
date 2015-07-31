@@ -116,10 +116,10 @@
   [s]
   (re-find cond-keyword-regex s))
 
-(defn match-repeats
+(defn match-repeat
   [s]
   (re-find repeat-keyword-regex s))
 
-(defn match-exceptions
+(defn match-exception
   [s]
   (re-find exception-keyword-regex s))
