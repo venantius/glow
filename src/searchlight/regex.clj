@@ -55,19 +55,17 @@
   [s]
   (re-find #"(?:\d+\.\d+|\d+)" s))
 
-(defn match-special
-  "Match a special form"
-  [s]
-  (re-find #"(?<![\w-])(?:clojure.core/fn|clojure.core/let|clojure.core/loop|def|do|fn|if|let|loop|monitor-enter|monitor-exit|new|quote|recur|set!|var)(?![\w-])" s))
-
-(defn match-definitions
-  "Match a definition form"
-  [s]
-  (re-find #"(?<![\w-])(?:clojure.core/definline|clojure.core/definterface|clojure.core/defmacro|clojure.core/defmethod|clojure.core/defmulti|clojure.core/defn|clojure.core/defn-|clojure.core/defonce|clojure.core/defprotocol|clojure.core/defrecord|clojure.core/defstruct|clojure.core/deftype|definline|definterface|defmacro|defmethod|defmulti|defn|defn-|defonce|defprotocol|defrecord|defstruct|deftype)(?![\w-])" s))
-
 (defn- core-keyword-pattern
   [s]
   (re-pattern (str "(?<![\\w-])(?:" s ")(?![\\w-])")))
+
+(def special-keyword-regex
+  (core-keyword-pattern
+   (keywords->regex-pattern "keywords/special.txt")))
+
+(def definition-keyword-regex
+  (core-keyword-pattern
+   (keywords->regex-pattern "keywords/definitions.txt")))
 
 (def macro-keyword-regex
   (core-keyword-pattern
@@ -76,6 +74,16 @@
 (def function-keyword-regex
   (core-keyword-pattern
    (keywords->regex-pattern "keywords/functions.txt")))
+
+(defn match-special
+  "Match special forms."
+  [s]
+  (re-find special-keyword-regex s))
+
+(defn match-definitions
+  "Match a clojure.core definition form."
+  [s]
+  (re-find definition-keyword-regex s))
 
 (defn match-macros
   "Match a clojure.core macro."

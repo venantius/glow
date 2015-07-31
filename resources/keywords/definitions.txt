@@ -1,0 +1,1 @@
+clojure.core/definline clojure.core/definterface clojure.core/defmacro clojure.core/defmethod clojure.core/defmulti clojure.core/defn clojure.core/defn- clojure.core/defonce clojure.core/defprotocol clojure.core/defrecord clojure.core/defstruct clojure.core/deftype definline definterface defmacro defmethod defmulti defn defn- defonce defprotocol defrecord defstruct deftype
