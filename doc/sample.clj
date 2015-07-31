@@ -2,4 +2,4 @@
 
 (defn func
  [x]
- (conj {} [:ab (+ 1.1 x)])
+ (conj {} [:a (+ 1.1 x)])

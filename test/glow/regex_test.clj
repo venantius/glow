@@ -4,12 +4,14 @@
             [glow.regex :as regex]))
 
 (deftest match-keyword-works
-  (let [a (slurp (io/resource "test/regex/keywords/example_1.clj"))
-        b (slurp (io/resource "test/regex/keywords/example_2.clj"))
-        c (slurp (io/resource "test/regex/keywords/example_3.clj"))]
+  (let [a "(ns basic\n  (:require clojure.java.io))"
+        b "(def b ::this:is:an:example)"
+        c "(ns example-the-third)\n\n(def with-symbols :afwe!234$*-_+=<>:a)"
+        d "this is a :b single letter keyword"]
     (is (= ":require" (regex/match-keyword a)))
     (is (= "::this:is:an:example" (regex/match-keyword b)))
-    (is (= ":afwe!234$*-_+=<>:a" (regex/match-keyword c)))))
+    (is (= ":afwe!234$*-_+=<>:a" (regex/match-keyword c)))
+    (is (= ":b" (regex/match-keyword d)))))
 
 (deftest match-comment-works
   (let [a (slurp (io/resource "test/regex/comments/example_1.clj"))

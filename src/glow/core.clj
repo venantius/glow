@@ -37,14 +37,14 @@
 (defn highlight-conditionals
   "Highlight clojure.core conditionals."
   [s]
-  (if-let [match (regex/match-conditionals s)]
+  (if-let [match (regex/match-conditional s)]
     (colorize-and-recurse s match highlight-conditionals :green)
     (highlight-repeats s)))
 
 (defn highlight-variables
   "Highlight clojure.core variables."
   [s]
-  (if-let [match (regex/match-variables s)]
+  (if-let [match (regex/match-variable s)]
     (colorize-and-recurse s match highlight-variables :blue)
     (highlight-conditionals s)))
 
@@ -72,16 +72,23 @@
 (defn- highlight-macros
   "Highlight macros."
   [s]
-  (if-let [match (regex/match-macros s)]
+  (if-let [match (regex/match-macro s)]
     (colorize-and-recurse s match highlight-macros :orange)
     (highlight-special-forms s)))
+
+(defn- highlight-numbers
+  "Highlight numbers."
+  [s]
+  (if-let [match (regex/match-number s)]
+    (colorize-and-recurse s match highlight-macros :cyan)
+    (highlight-macros s)))
 
 (defn- highlight-booleans
   "Highlight booleans."
   [s]
   (if-let [match (regex/match-bool s)]
     (colorize-and-recurse s match highlight-booleans :cyan)
-    (highlight-macros s)))
+    (highlight-numbers s)))
 
 (defn- highlight-nils
   "Highlight nils."

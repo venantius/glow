@@ -41,7 +41,7 @@
 (defn match-keyword
   "Parse a string of source code and try to match on keywords"
   [s]
-  (re-find #"(?::{1,2}[^\ ][0-9a-z:?.$!*-_]+)" s))
+  (re-find #"(?::{1,2}[^\ ][0-9a-z:?.$!*-_]*)" s))
 
 (defn match-s-exp
   "Parse a string of source code and try to match on s-expressions"
@@ -97,7 +97,7 @@
   [s]
   (re-find definition-keyword-regex s))
 
-(defn match-macros
+(defn match-macro
   "Match a clojure.core macro."
   [s]
   (re-find macro-keyword-regex s))
@@ -107,12 +107,12 @@
   [s]
   (re-find function-keyword-regex s))
 
-(defn match-variables
+(defn match-variable
   "Match a clojure.core variable."
   [s]
   (re-find variable-keyword-regex s))
 
-(defn match-conditionals
+(defn match-conditional
   [s]
   (re-find cond-keyword-regex s))
 
