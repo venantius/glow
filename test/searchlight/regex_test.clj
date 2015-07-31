@@ -50,3 +50,17 @@
     (is (= "\"test \\\" asdf \"" (regex/match-string c)))
     (is (= "\"will be an\nexample\"" (regex/match-string d)))
     (is (= "\"Given two strings, split the former on the first occurrence of the latter.\"" (regex/match-string e)))))
+
+(deftest match-number-works
+  (let [a "asdf 1"
+        b "a 1 b"
+        c "a 2 3 b"
+        d "a 3.2 x"
+        e "0.4 y"
+        f "0.8 08"]
+    (is (= "1" (regex/match-number a)))
+    (is (= "1" (regex/match-number b)))
+    (is (= "2" (regex/match-number c)))
+    (is (= "3.2" (regex/match-number d)))
+    (is (= "0.4" (regex/match-number e)))
+    (is (= "0.8" (regex/match-number f)))))
