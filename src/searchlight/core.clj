@@ -3,7 +3,8 @@
             [searchlight.regex :as regex]))
 
 (def ansi-fn-map
-  {:red ansi/red
+  {:blue ansi/blue
+   :red ansi/red
    :cyan ansi/cyan
    :green ansi/green
    :grey ansi/grey
@@ -19,12 +20,19 @@
   (let [[pre post] (split-in-two s match)]
     (str (callback pre) ((color ansi-fn-map) match) (callback post))))
 
+(defn- highlight-core-fns
+  "Highlight functions in clojure.core."
+  [s]
+  (if-let [match (regex/match-func s)]
+    (colorize-and-recurse s match highlight-core-fns :blue)
+    s))
+
 (defn- highlight-definitions
   "Highlight definitions."
   [s]
   (if-let [match (regex/match-definitions s)]
     (colorize-and-recurse s match highlight-definitions :orange)
-    s))
+    (highlight-core-fns s)))
 
 (defn- highlight-special-forms
   "Highlight special forms."
@@ -36,7 +44,7 @@
 (defn- highlight-macros
   "Highlight macros."
   [s]
-  (if-let [match (regex/match-macro s)]
+  (if-let [match (regex/match-macros s)]
     (colorize-and-recurse s match highlight-macros :orange)
     (highlight-special-forms s)))
 
