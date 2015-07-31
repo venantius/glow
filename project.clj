@@ -1,5 +1,5 @@
 (defproject venantius/glow "0.1.0-SNAPSHOT"
-  :description "Syntax highlighting for strings of Clojure source code."
+  :description "Syntax highlighting for Clojure source code."
   :url "https://github.com/venantius/glow"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
