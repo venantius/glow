@@ -1,6 +1,6 @@
 # Glow
 
-![]https://img.shields.io/clojars/v/venantius/glow.svg
+![](https://img.shields.io/clojars/v/venantius/glow.svg)
 
 A Clojure library for generating syntax-highlighted strings of Clojure source
 code.
