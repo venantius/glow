@@ -1,0 +1,1 @@
+case clojure.core/case clojure.core/cond clojure.core/cond-> clojure.core/cond->> clojure.core/condp clojure.core/if-let clojure.core/if-not clojure.core/if-some clojure.core/when clojure.core/when-first clojure.core/when-let clojure.core/when-not clojure.core/when-some cond cond-> cond->> condp if-let if-not if-some when when-first when-let when-not when-some

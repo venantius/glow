@@ -2,18 +2,26 @@
   (:require [clojure.java.io :as io]))
 
 (defn keywords->regex-pattern
-  "Given a list of whitespace-delimited keywords in alphabetical order,
+  "Given a string of whitespace-delimited keywords in alphabetical order,
   escape any problematic characters and delimit on pipes."
-  [resource]
+  [s]
   (-> (clojure.string/join
        "|"
-       (-> (io/resource resource)
-           slurp
+       (-> s
            clojure.string/trim-newline
            (clojure.string/split #" ")
            reverse))
       (clojure.string/replace "+" "\\+")
+      (clojure.string/replace "." "\\.")
+      (clojure.string/replace "?" "\\?")
       (clojure.string/replace "*" "\\*")))
+
+(defn core-keyword-pattern
+  [resource]
+  (re-pattern
+   (str "(?<![\\w-])(?:"
+        (keywords->regex-pattern (slurp (io/resource resource)))
+        ")(?![\\w-])")))
 
 (defn match-regex
   "Parse a string of source code and try to match on regex literals."
@@ -55,25 +63,29 @@
   [s]
   (re-find #"(?:\d+\.\d+|\d+)" s))
 
-(defn- core-keyword-pattern
-  [s]
-  (re-pattern (str "(?<![\\w-])(?:" s ")(?![\\w-])")))
-
 (def special-keyword-regex
-  (core-keyword-pattern
-   (keywords->regex-pattern "keywords/special.txt")))
+  (core-keyword-pattern "keywords/special.txt"))
 
 (def definition-keyword-regex
-  (core-keyword-pattern
-   (keywords->regex-pattern "keywords/definitions.txt")))
+  (core-keyword-pattern "keywords/definitions.txt"))
 
 (def macro-keyword-regex
-  (core-keyword-pattern
-   (keywords->regex-pattern "keywords/macros.txt")))
+  (core-keyword-pattern "keywords/macros.txt"))
 
 (def function-keyword-regex
-  (core-keyword-pattern
-   (keywords->regex-pattern "keywords/functions.txt")))
+  (core-keyword-pattern "keywords/functions.txt"))
+
+(def variable-keyword-regex
+  (core-keyword-pattern "keywords/variables.txt"))
+
+(def cond-keyword-regex
+  (core-keyword-pattern "keywords/cond.txt"))
+
+(def repeat-keyword-regex
+  (core-keyword-pattern "keywords/repeat.txt"))
+
+(def exception-keyword-regex
+  (core-keyword-pattern "keywords/exception.txt"))
 
 (defn match-special
   "Match special forms."
@@ -95,7 +107,19 @@
   [s]
   (re-find function-keyword-regex s))
 
-;; variables
-;; repeat
-;; conditionals
-;; exceptions
+(defn match-variables
+  "Match a clojure.core variable."
+  [s]
+  (re-find variable-keyword-regex s))
+
+(defn match-conditionals
+  [s]
+  (re-find cond-keyword-regex s))
+
+(defn match-repeats
+  [s]
+  (re-find repeat-keyword-regex s))
+
+(defn match-exceptions
+  [s]
+  (re-find exception-keyword-regex s))

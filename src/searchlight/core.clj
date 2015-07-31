@@ -20,12 +20,40 @@
   (let [[pre post] (split-in-two s match)]
     (str (callback pre) ((color ansi-fn-map) match) (callback post))))
 
+(defn highlight-exceptions
+  "Highlight Clojure exception keywords."
+  [s]
+  (if-let [match (regex/match-exceptions s)]
+    (colorize-and-recurse s match highlight-exceptions :green)
+    s))
+
+(defn highlight-repeats
+  "Highlight clojure.core repeat keywords."
+  [s]
+  (if-let [match (regex/match-repeats s)]
+    (colorize-and-recurse s match highlight-repeats :green)
+    (highlight-exceptions s)))
+
+(defn highlight-conditionals
+  "Highlight clojure.core conditionals."
+  [s]
+  (if-let [match (regex/match-conditionals s)]
+    (colorize-and-recurse s match highlight-conditionals :green)
+    (highlight-repeats s)))
+
+(defn highlight-variables
+  "Highlight clojure.core variables."
+  [s]
+  (if-let [match (regex/match-variables s)]
+    (colorize-and-recurse s match highlight-variables :blue)
+    (highlight-conditionals s)))
+
 (defn- highlight-core-fns
   "Highlight functions in clojure.core."
   [s]
   (if-let [match (regex/match-func s)]
     (colorize-and-recurse s match highlight-core-fns :blue)
-    s))
+    (highlight-variables s)))
 
 (defn- highlight-definitions
   "Highlight definitions."
