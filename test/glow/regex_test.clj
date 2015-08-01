@@ -94,13 +94,19 @@
   (is (= 0 1)))
 
 (deftest match-variable-works
-  (is (= 0 1)))
+  (is (= "*1" (regex/match-variable "(def bar *1)")))
+  (is (= "clojure.core/*print-length*" (regex/match-variable "clojure.core/*print-length*"))))
 
 (deftest match-conditional-works
-  (is (= 0 1)))
+  (is (= "case" (regex/match-conditional "(case ...")))
+  (is (= "clojure.core/cond->" (regex/match-conditional "(clojure.core/cond->")))
+  (is (= "cond->>" (regex/match-conditional "cond->>")))
+  (is (= "clojure.core/when-some" (regex/match-conditional "clojure.core/when-some"))))
 
 (deftest match-repeat-works
-  (is (= 0 1)))
+  (is (= "doseq" (regex/match-repeat "(doseq ..)")))
+  (is (= "clojure.core/dotimes" (regex/match-repeat "(clojure.core/dotimes ...)")))
+  (is (= "while" (regex/match-repeat "while ..."))))
 
 (deftest match-exception-works
   (is (= "catch" (regex/match-exception "(catch Exception e (println e))")))
