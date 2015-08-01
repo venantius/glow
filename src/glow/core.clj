@@ -62,12 +62,19 @@
     (colorize-and-recurse s match highlight-definitions :orange)
     (highlight-core-fns s)))
 
+(defn highlight-reader-chars
+  "Highlight reader characters."
+  [s]
+  (if-let [match (regex/match-reader-char s)]
+    (colorize-and-recurse s match highlight-reader-chars :red)
+    (highlight-definitions s)))
+
 (defn- highlight-special-forms
   "Highlight special forms."
   [s]
   (if-let [match (regex/match-special s)]
     (colorize-and-recurse s match highlight-special-forms :red)
-    (highlight-definitions s)))
+    (highlight-reader-chars s)))
 
 (defn- highlight-macros
   "Highlight macros."

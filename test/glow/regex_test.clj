@@ -3,7 +3,6 @@
             [clojure.test :refer :all]
             [glow.regex :as regex]))
 
-
 (deftest match-regex-works
   (let [a (slurp (io/resource "test/regex/regexes/example_1.txt"))
         b (slurp (io/resource "test/regex/regexes/example_2.txt"))
@@ -11,7 +10,6 @@
     (is (= "#\"\\\"\"" (regex/match-regex a)))
     (is (= "#\"(regex)\"" (regex/match-regex b)))
     (is (= "#\"\"" (regex/match-regex c)))))
-
 
 (deftest match-string-works
   (let [a (slurp (io/resource "test/regex/strings/example"))
@@ -24,7 +22,6 @@
     (is (= "\"test \\\" asdf \"" (regex/match-string c)))
     (is (= "\"will be an\nexample\"" (regex/match-string d)))
     (is (= "\"Given two strings, split the former on the first occurrence of the latter.\"" (regex/match-string e)))))
-
 
 (deftest match-comment-works
   (let [a (slurp (io/resource "test/regex/comments/example_1.clj"))
@@ -41,8 +38,6 @@
     (is (= "::this:is:an:example" (regex/match-keyword b)))
     (is (= ":afwe!234$*-_+=<>:a" (regex/match-keyword c)))
     (is (= ":b" (regex/match-keyword d)))))
-
-
 
 (deftest match-s-exp-works
   (let [a "(def x true)"
@@ -80,6 +75,16 @@
 
 (deftest match-special-works
   (is (= 0 1)))
+
+(deftest match-reader-char-works
+  (is (= "~@" (regex/match-reader-char " ~@ a")))
+  (is (= "`" (regex/match-reader-char "`(def x 5)")))
+  (is (= "@" (regex/match-reader-char " @(future 5)")))
+  (is (= "~" (regex/match-reader-char " ~(conj [] a)")))
+  (is (= "^" (regex/match-reader-char " (defn foo [^Throwable tr] tr)")))
+  (is (= "@" (regex/match-reader-char " @ a")))
+  (is (= "'" (regex/match-reader-char " 'asfd ")))
+  (is (= "&" (regex/match-reader-char " (defn foo [x & y] x)"))))
 
 (deftest match-definition-works
   (is (= 0 1)))

@@ -92,6 +92,11 @@
   [s]
   (re-find special-keyword-regex s))
 
+(defn match-reader-char
+  "Match a Clojure reader character."
+  [s]
+  (re-find #"(?:\~@|\~|@|`|\^|'|&)" s))
+
 (defn match-definition
   "Match a clojure.core definition form."
   [s]
