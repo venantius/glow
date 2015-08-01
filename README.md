@@ -41,13 +41,14 @@ Nice.
 
 ## Configuration
 
-Don't like the colorscheme I've chosen? Well, then make up your own!
+Don't like the default colorscheme? No problem! 
 
-`glow.core/colorscheme` has an exhaustive list of things you can highlight.
 Pass a map with whatever highlighting options you want as an optional
-secondary argument to `glow.core/highlight`, e.g.:
+secondary argument:
 
 ![](./doc/glow_2.png)
+
+Take a look at `glow.core/colorscheme` to see how this should be structured.
 
 ## Contributing
 
