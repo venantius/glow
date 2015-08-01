@@ -60,7 +60,7 @@ If you're interested in making a different sort of contribution to the project, 
 
 ## Special Thanks
 
-I owe a big debt of gratitutde to the authors, contributors and maintainers of [vim-clojure-static](https://github.com/guns/vim-clojure-static), whose work was a constant reference as I was writing Glow's regular expressions.
+I owe a big debt of gratitude to the authors, contributors and maintainers of [vim-clojure-static](https://github.com/guns/vim-clojure-static), whose work was a constant reference as I was writing Glow's regular expressions.
 
 ## License
 
