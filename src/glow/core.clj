@@ -38,9 +38,16 @@
   (clojure.string/split s (re-pattern (java.util.regex.Pattern/quote split)) 2))
 
 (defn colorize-and-recurse
+  "Given a string, a known substring, a callback function, and the Clojure
+  literal type, split the string in half around the substring, then re-join:
+   - the results of the callback function on the first half
+   - the colorized substring
+   - the results of the callback function on the second half"
   [s match callback hl-type]
   (let [[pre post] (split-in-two s match)]
-    (str (callback pre) (((get colorscheme hl-type :default) ansi-fn-map) match) (callback post))))
+    (str (callback pre)
+         (((get colorscheme hl-type :default) ansi-fn-map) match)
+         (callback post))))
 
 (defn- highlight-exceptions
   "Highlight Clojure exception keywords."
@@ -162,10 +169,21 @@
     (highlight-strings s)))
 
 (defn highlight
-  "Highlight a string of Clojure source. This is a recursive algorithm that
-  functions by performing regular expression pattern matches on the following
-  Clojure literals, in order: regular expressions, strings, comments,
-  keywords, s-expressions, nils, booleans,
-  "
-  [s]
-  (highlight-regexes s))
+  "Highlight a string of Clojure source. This functions by pattern matching
+  on the following literals, in order: regular expressions, strings, comments,
+  keywords, s-expressions, nils, booleans, numbers, clojure.core macros,
+  special forms, reader characters, definitions, clojure.core functions,
+  clojure.core variables, conditionals, repeat forms, and exceptions.
+
+  By default, highlight uses `glow.core/colorscheme` to figure out which
+  ANSI colors to use. If you want to use a different colorscheme, just
+  pass in a map in a style akin to `glow.core/colorscheme` as an optional
+  second argument, e.g.:
+
+    {:string :blue
+     :number :green}"
+  ([s]
+   (highlight-regexes s))
+  ([s opts]
+   (with-redefs [colorscheme opts]
+     (highlight-regexes s))))

@@ -62,3 +62,7 @@
               (ansi/red ")")
               "\n")
          (core/highlight (slurp (io/resource "test/core/sample.clj"))))))
+
+(deftest highlight-works-with-optional-arg
+  (is (= (ansi/blue "defn")
+         (core/highlight "defn" {:definition :blue}))))
