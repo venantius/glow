@@ -107,7 +107,7 @@
   [s]
   (re-find macro-keyword-regex s))
 
-(defn match-func
+(defn match-core-fn
   "Match a clojure.core function."
   [s]
   (re-find function-keyword-regex s))

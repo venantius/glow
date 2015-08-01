@@ -94,13 +94,13 @@
   (is (= "io!" (regex/match-macro "(io! ...)")))
   (is (= ".." (regex/match-macro "(.. System (getProperties) (get \"os.name\"))"))))
 
-(deftest match-func-works
-  (is (= "*" (regex/match-func "(* 1 1)")))
-  (is (= "+" (regex/match-func "(+ 1 1)")))
-  (is (= "->ArrayChunk" (regex/match-func "(->ArrayChunk [])")))
-  (is (= "neg?" (regex/match-func "(neg? -5")))
-  (is (= "empty?" (regex/match-func "(empty? {})")))
-  (is (= "empty" (regex/match-func "(empty [])"))))
+(deftest match-core-fn-works
+  (is (= "*" (regex/match-core-fn "(* 1 1)")))
+  (is (= "+" (regex/match-core-fn "(+ 1 1)")))
+  (is (= "->ArrayChunk" (regex/match-core-fn "(->ArrayChunk [])")))
+  (is (= "neg?" (regex/match-core-fn "(neg? -5")))
+  (is (= "empty?" (regex/match-core-fn "(empty? {})")))
+  (is (= "empty" (regex/match-core-fn "(empty [])"))))
 
 (deftest match-variable-works
   (is (= "*1" (regex/match-variable "(def bar *1)")))

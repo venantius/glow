@@ -7,7 +7,7 @@ code.
 
 ## Installation
 
-To add Glow as a dependency to your project, just add the following to the `:dependencies` key of your `project.clj`:
+To use Glow in your project, just add the following to the `:dependencies` key of your `project.clj`:
 
 ```clojure
 [venantius/glow "0.1.0"]
@@ -39,6 +39,10 @@ All we have to do is slurp that file and pass the string to `glow.core/highlight
 
 Nice.
 
+## Configuration
+
+## TODO: FILL ME OUT ONCE THIS FUNCTIONALITY IS COMPLETE
+
 ## Contributing
 
 I'm interested in making the regular expressions in Glow faster and more robust. Frankly, I'm not an expert in regexes, and some of my implementations could use a more critical eye.
@@ -49,9 +53,7 @@ If you're interested in making a different sort of contribution to the project, 
 
 ## Special Thanks
 
-I owe a big debt to the authors, contributors and maintainers of [vim-clojure-static](https://github.com/guns/vim-clojure-static), whose work was a constant reference as I was writing Glow's regular expressions.
-
-I also owe [@brandonbloom](https://github.com/brandonbloom) for his work on [fipp](https://github.com/brandonbloom/fipp) and [@greglook](https://github.com/greglook) for his work on [puget](https://github.com/greglook/puget) and [whidbey](https://github.com/greglook/whidbey) - their work on pretty-printing Clojure documents was what started me down this road in the first place.
+I owe a big debt of gratitutde to the authors, contributors and maintainers of [vim-clojure-static](https://github.com/guns/vim-clojure-static), whose work was a constant reference as I was writing Glow's regular expressions.
 
 ## TODO
 

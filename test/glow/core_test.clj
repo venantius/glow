@@ -6,12 +6,12 @@
 
 (deftest highlight-works
   (is (= (str (ansi/red "(")
-              (ansi/orange "ns")
+              (ansi/bright-red "ns")
               " sample"
               (ansi/red ")")
               "\n\n"
               (ansi/red "(")
-              (ansi/orange "defn")
+              (ansi/bright-red "defn")
               " func\n "
               (ansi/red "[")
               (ansi/red "^")
@@ -44,7 +44,7 @@
               " variable\n  "
               (ansi/red "@")
               (ansi/red "(")
-              (ansi/orange "future")
+              (ansi/bright-red "future")
               "\n     "
               (ansi/red "(")
               (ansi/green "if-let")

@@ -39,10 +39,10 @@
   [s]
   (str csi 37 suffix s reset-font))
 
-(defn orange
+(defn bright-red
   [s]
   (str csi 91 suffix s reset-font))
 
-(defn grey
+(defn bright-green
   [s]
   (str csi 92 suffix s reset-font))
