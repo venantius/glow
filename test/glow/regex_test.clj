@@ -72,7 +72,8 @@
   (is (= "0.8" (regex/match-number "0.8 08"))))
 
 (deftest match-special-works
-  (is (= 0 1)))
+  (is (= "monitor-exit" (regex/match-special "(monitor-exit ...)")))
+  (is (= "set!" (regex/match-special "set! foo bar"))))
 
 (deftest match-reader-char-works
   (is (= "~@" (regex/match-reader-char " ~@ a")))
@@ -85,13 +86,21 @@
   (is (= "&" (regex/match-reader-char " (defn foo [x & y] x)"))))
 
 (deftest match-definition-works
-  (is (= 0 1)))
+  (is (= "clojure.core/defn-" (regex/match-definition "(clojure.core/defn- bar [] true")))
+  (is (= "defonce" (regex/match-definition "(defonce bar [])"))))
 
 (deftest match-macro-works
-  (is (= 0 1)))
+  (is (= "->" (regex/match-macro "(-> 5 (* 2))")))
+  (is (= "io!" (regex/match-macro "(io! ...)")))
+  (is (= ".." (regex/match-macro "(.. System (getProperties) (get \"os.name\"))"))))
 
 (deftest match-func-works
-  (is (= 0 1)))
+  (is (= "*" (regex/match-func "(* 1 1)")))
+  (is (= "+" (regex/match-func "(+ 1 1)")))
+  (is (= "->ArrayChunk" (regex/match-func "(->ArrayChunk [])")))
+  (is (= "neg?" (regex/match-func "(neg? -5")))
+  (is (= "empty?" (regex/match-func "(empty? {})")))
+  (is (= "empty" (regex/match-func "(empty [])"))))
 
 (deftest match-variable-works
   (is (= "*1" (regex/match-variable "(def bar *1)")))
