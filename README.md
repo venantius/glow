@@ -41,7 +41,13 @@ Nice.
 
 ## Configuration
 
-## TODO: FILL ME OUT ONCE THIS FUNCTIONALITY IS COMPLETE
+Don't like the colorscheme I've chosen? Well, then make up your own!
+
+`glow.core/colorscheme` has an exhaustive list of things you can highlight.
+Pass a map with whatever highlighting options you want as an optional
+secondary argument to `glow.core/highlight`, e.g.:
+
+![](./doc/glow_2.png)
 
 ## Contributing
 
@@ -54,10 +60,6 @@ If you're interested in making a different sort of contribution to the project, 
 ## Special Thanks
 
 I owe a big debt of gratitutde to the authors, contributors and maintainers of [vim-clojure-static](https://github.com/guns/vim-clojure-static), whose work was a constant reference as I was writing Glow's regular expressions.
-
-## TODO
-
-### Exception handling for cases when the string doesn't exist, etc.
 
 ## License
 
