@@ -54,24 +54,22 @@
     (is (= "}" (regex/match-s-exp f)))))
 
 (deftest match-nil-works
-  (is (= 0 1)))
+  (is (= "nil" (regex/match-nil "nil")))
+  (is (= "nil" (regex/match-nil "(if nil false)"))))
 
 (deftest match-bool-works
-  (is (= 0 1)))
+  (is (= "true" (regex/match-bool "true")))
+  (is (= "true" (regex/match-bool "(if true true)")))
+  (is (= "false" (regex/match-bool "false")))
+  (is (= "false" (regex/match-bool "(if false false)"))))
 
 (deftest match-number-works
-  (let [a "asdf 1"
-        b "a 1 b"
-        c "a 2 3 b"
-        d "a 3.2 x"
-        e "0.4 y"
-        f "0.8 08"]
-    (is (= "1" (regex/match-number a)))
-    (is (= "1" (regex/match-number b)))
-    (is (= "2" (regex/match-number c)))
-    (is (= "3.2" (regex/match-number d)))
-    (is (= "0.4" (regex/match-number e)))
-    (is (= "0.8" (regex/match-number f)))))
+  (is (= "1" (regex/match-number "asdf 1")))
+  (is (= "1" (regex/match-number "a 1 b")))
+  (is (= "2" (regex/match-number "a 2 3 b")))
+  (is (= "3.2" (regex/match-number "a 3.2 x")))
+  (is (= "0.4" (regex/match-number "a 0.4 y")))
+  (is (= "0.8" (regex/match-number "0.8 08"))))
 
 (deftest match-special-works
   (is (= 0 1)))
@@ -105,4 +103,7 @@
   (is (= 0 1)))
 
 (deftest match-exception-works
-  (is (= 0 1)))
+  (is (= "catch" (regex/match-exception "(catch Exception e (println e))")))
+  (is (= "finally" (regex/match-exception "(finally ...)")))
+  (is (= "throw" (regex/match-exception "(throw ...)")))
+  (is (= "try" (regex/match-exception "(try ..."))))
