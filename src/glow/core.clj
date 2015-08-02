@@ -185,5 +185,7 @@
   ([s]
    (highlight-regexes s))
   ([s opts]
-   (with-redefs [colorscheme opts]
+   (with-redefs [colorscheme (if opts
+                               opts
+                               colorscheme)]
      (highlight-regexes s))))
