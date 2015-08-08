@@ -1,6 +1,8 @@
 (ns glow.core
   (:require [glow.ansi :as ansi]
-            [glow.regex :as regex]))
+            [glow.parse :as parse]
+            [glow.regex :as regex]
+            [instaparse.core :as insta]))
 
 (def ansi-fn-map
   {:red ansi/red
@@ -36,6 +38,11 @@
   "Given two strings, split the former on the first occurrence of the latter."
   [s split]
   (clojure.string/split s (re-pattern (java.util.regex.Pattern/quote split)) 2))
+
+(defn colorize
+  "Colorize a string with its highlight color."
+  [s hl-type]
+  (((get colorscheme hl-type :default) ansi-fn-map) s))
 
 (defn colorize-and-recurse
   "Given a string, a known substring, a callback function, and the Clojure
@@ -189,3 +196,87 @@
                                opts
                                colorscheme)]
      (highlight-regexes s))))
+
+(declare parse)
+
+(defn highlight-comment
+  [match s]
+  (let [match (apply str match)]
+    (str (colorize match :comment)
+         (parse (second (split-in-two s match))))))
+
+(defn whitespace
+  [match s]
+  (str (apply str match) (parse (second (split-in-two s (apply str match))))))
+
+(defn highlight-s-exp
+  [match s]
+  (str (colorize (first match) :s-exp)
+       (parse (apply str (parse/un-nest (rest (butlast match)))))
+       (colorize (last match) :s-exp)))
+
+(defn highlight-symbol
+  [match s]
+  (let [match (apply str match)]
+    (str match (parse (second (split-in-two s match))))))
+
+(defn highlight-reader-macro
+  [match s]
+  (str (colorize (apply str (first match)) :reader-char)
+       (parse (apply str (rest s)))))
+
+(defn highlight-keyword
+  [match s]
+  (let [match (apply str (first match) (parse/un-nest (rest match)))]
+    (str (colorize match :keyword)
+         (parse (second (split-in-two s match))))))
+
+(defn highlight-string
+  [match s]
+  (let [match (apply str match)]
+    (str (colorize match :string)
+         (parse (second (split-in-two s match))))))
+
+(defn colorize-collection
+  [& args]
+  (str (ansi/red (first args))
+       (apply str (rest (butlast args)))
+       (ansi/red (last args))))
+
+(defn colorize-keyword
+  [& args]
+  (ansi/green (str (first args)
+                   (second args))))
+
+(defn trans-colorize
+  [d]
+  (insta/transform
+    {:SYMBOL str
+     :KEYWORD colorize-keyword
+     :COMMENT (comp ansi/bright-green str)
+     :SEXPS (comp str)
+     :SEXP str
+     :BOOLEAN (comp ansi/cyan str)
+     :WHITESPACE str
+     :STRING (comp ansi/cyan str)
+     :COLLECTION colorize-collection
+     :MAP colorize-collection
+     :READER_MACRO (comp ansi/red str)
+     :CARAT (comp ansi/red str)
+     :DEREF_CHAR (comp ansi/red str)
+    :NUMBER (comp ansi/cyan str)}
+    d))
+
+(defn boop
+  [s]
+  (when (and s (not-empty s))
+    (let [matched (insta/parse parse/clj-parser s :partial true)]
+      (str
+        (trans-colorize (first matched))
+        (boop (second (split-in-two s (first (parse/un-nest matched))))))
+    )))
+
+(defn highlight-2
+  [s]
+  (println (parse s))
+  (newline))

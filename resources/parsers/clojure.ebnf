@@ -1,0 +1,57 @@
+<PROGRAM> = SEXPS 
+SEXPS = (SEXP / WHITESPACE)+
+SEXP = (COMMENT | (REGEX / STRING) | COLLECTION | NUMBER | (KEYWORD / SYMBOL) | NIL | BOOLEAN | CHAR | READER_MACRO)
+
+WHITESPACE = (SPACE | COMMA | NEWLINE)
+<SPACE> = #"([ \t])+"
+COMMA = ","
+
+NIL = "nil"
+BOOLEAN = TRUE | FALSE
+<TRUE> = "true"
+<FALSE> = "false"
+
+<UPPERALPHABETIC> = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
+<LOWERALPHABETIC> = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+
+NAMESPACE = LOWERALPHABETIC+ ("." LOWERALPHABETIC+)*
+<ALPHABETIC> = UPPERALPHABETIC | LOWERALPHABETIC
+<ALPHANUMERIC> = (ALPHABETIC | NUMBER)
+
+COLLECTION = (LIST | VECTOR | MAP | SET)
+<LIST> = '(' SEXPS* ')'
+<VECTOR> = "[" SEXPS* "]"
+MAP = "{" (SEXPS SEXPS)* "}"
+<SET> = "#{" SEXPS* "}" 
+
+TAG = "#" (NAMESPACE "/") ALPHABETIC+
+
+KEYWORD = (":" | "::") SYMBOL
+SYMBOL = #'[\pL_$&/=+~<>\.|§?*-][\pL\p{Digit}_$&/=+~.:<>|§?*-]*'
+
+
+STRING = '"' #'([^\"\\]|\\.)*' '"'
+REGEX = '#' STRING
+
+CHAR = "\\" (ALPHABETIC | "newline" | "tab" | "return" | "space")
+
+COMMENT = ";" #'([^\n\r]|\\.)*' NEWLINE
+<NEWLINE> = "\r\n" | "\n" | "\r"
+DISCARD = "#_"
+
+NUMBER = #"\p{Digit}+"
+
+(* Reader Macros *)
+READER_MACRO = (meta_data | var_quote | dispatch | deref | quote | backtick | unquote | unquote_splicing | gensym | type_ann)
+
+<meta_data> = CARAT (MAP | KEYWORD)
+<type_ann> = CARAT SYMBOL
+CARAT = '^'
+var_quote = '#\'' SYMBOL
+dispatch = '#' SYMBOL SEXP
+deref = '@' SEXP
+<quote> = '\'' SEXP
+backtick = '`' SEXP
+unquote = '~' SEXP
+unquote_splicing = '~@' SEXP
+gensym = SYMBOL '#'

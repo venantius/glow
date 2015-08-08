@@ -16,12 +16,14 @@
         b (slurp (io/resource "test/regex/strings/example2"))
         c (slurp (io/resource "test/regex/strings/example_3.clj"))
         d (slurp (io/resource "test/regex/strings/example4"))
-        e (slurp (io/resource "test/regex/strings/example_5.clj"))]
+        e (slurp (io/resource "test/regex/strings/example_5.clj"))
+        f (slurp (io/resource "test/regex/strings/example_6.clj"))]
     (is (= "\"test\"" (regex/match-string a)))
     (is (nil? (regex/match-string b)))
     (is (= "\"test \\\" asdf \"" (regex/match-string c)))
     (is (= "\"will be an\nexample\"" (regex/match-string d)))
-    (is (= "\"Given two strings, split the former on the first occurrence of the latter.\"" (regex/match-string e)))))
+    (is (= "\"Given two strings, split the former on the first occurrence of the latter.\"" (regex/match-string e)))
+    (is (= "" (regex/match-string f)))))
 
 (deftest match-comment-works
   (let [a (slurp (io/resource "test/regex/comments/example_1.clj"))

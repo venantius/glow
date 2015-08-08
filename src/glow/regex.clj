@@ -31,7 +31,7 @@
 (defn match-string
   "Parse a string of source code and try to match on string literals."
   [s]
-  (first (re-find #"\"(\\.|[^\"])*\"" s)))
+  (re-find #"[^\"]*(?:\\.[^\"]*)*\"" s))
 
 (defn match-comment
   "Parse a string of source code and try to match on comments"
