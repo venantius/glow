@@ -27,7 +27,7 @@ grammar Clojure;
 
 file: form *;
 
-form: whitespace | literal
+form: comment | whitespace | literal
     | list
     | vector
     | map
@@ -40,7 +40,7 @@ list: '(' forms ')' ;
 
 vector: '[' forms ']' ;
 
-map: '{' (form form)* '}' ;
+map: '{' forms '}' ;
 
 set: '#{' forms '}' ;
 
@@ -250,11 +250,11 @@ SYMBOL_REST
     | '.'
     ;
 
-// Discard
+// Whitespace, Comments
 //--------------------------------------------------------------------
 
 whitespace: WS;
-WS : [ \n\r\t\,]+;
+WS: [ \n\r\t\,]+;
 
-fragment
-COMMENT: ';' ~[\r\n]* ;
+comment: COMMENT_CHAR;
+COMMENT_CHAR: ';' ~[\n\r]+ '\n';
