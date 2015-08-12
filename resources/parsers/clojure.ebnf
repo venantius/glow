@@ -26,7 +26,8 @@ KEYWORD = (":" | "::") SYMBOL
 SYMBOL = !(BOOLEAN | NIL | CHAR) #'[\pL_$&%/=+<>\.|§?*-][\pL\p{Digit}_$&%/=+\'.:<>!|§?*-]*'
 
 
-STRING = '"' (#'([^\"\\\r\n]|\\.)*' NEWLINE?)+ '"'
+STRING = '"' STRING_CHAR* '"'
+<STRING_CHAR> = #'([^\"\\]|\\.)'
 REGEX = '#' STRING
 
 CHAR = "\\" #"(space|return|tab|newline)|[a-zA-Z_$&%/=+<>\.\,|?*-]"

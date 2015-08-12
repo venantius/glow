@@ -251,34 +251,50 @@
 (defn trans-colorize
   [d]
   (insta/transform
-    {:SYMBOL str
-     :KEYWORD colorize-keyword
-     :COMMENT (comp ansi/bright-green str)
-     :SEXPS (comp str)
-     :SEXP str
-     :BOOLEAN (comp ansi/cyan str)
-     :WHITESPACE str
-     :STRING (comp ansi/cyan str)
+   {:SYMBOL str
+    :KEYWORD colorize-keyword
+    :COMMENT (comp ansi/bright-green str)
+    :SEXPS (comp str)
+    :SEXP str
+    :BOOLEAN (comp ansi/cyan str)
+    :WHITESPACE str
+    :STRING (comp ansi/cyan str)
 
-     :COLLECTION str
-     :MAP colorize-collection
-     :LIST colorize-collection
-     :VECTOR colorize-collection
+    :COLLECTION str
+    :MAP colorize-collection
+    :LIST colorize-collection
+    :VECTOR colorize-collection
 
-     :READER_MACRO (comp ansi/red str)
-     :CARAT (comp ansi/red str)
-     :DEREF_CHAR (comp ansi/red str)
+    :READER_MACRO (comp ansi/red str)
+    :CARAT (comp ansi/red str)
+    :DEREF_CHAR (comp ansi/red str)
     :NUMBER (comp ansi/cyan str)}
-    d))
+   d))
+
+(defn colorize-antlr
+  [d]
+  (insta/transform
+   {
+    :simple_sym identity
+    :string (comp ansi/cyan str)
+    :ns_symbol str
+    :long str
+    :literal str
+    :form str
+    :forms str
+    :list colorize-collection
+    :vector colorize-collection
+    :number (comp ansi/cyan str)
+    }
+   (vec d)))
 
 (defn boop
   [s]
   (when (and s (not-empty s))
     (let [matched (insta/parse parse/clj-parser s :partial true)]
       (str
-        (trans-colorize (first matched))
-        (boop (second (split-in-two s (first (parse/un-nest matched))))))
-    )))
+       (trans-colorize (first matched))
+       (boop (second (split-in-two s (first (parse/un-nest matched)))))))))
 
 (defn highlight-2
   [s]
