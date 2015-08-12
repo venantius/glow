@@ -11,14 +11,19 @@
   (insta/transform
     {:SEXPS str
      :SEXP str
+
      :WHITESPACE str
+
+     :COMMENT str
      :KEYWORD str
      :STRING str
      :SYMBOL str
+
      :COLLECTION str
+     :VECTOR str
      :LIST str
      :MAP str
-     :COMMENT str
+
      :READER_MACRO str
      :CARAT str
      :BOOLEAN str}

@@ -1,15 +1,11 @@
-<PROGRAM> = SEXPS 
-SEXPS = (SEXP / WHITESPACE)+
-SEXP = (COMMENT | (REGEX / STRING) | COLLECTION | NUMBER | (KEYWORD / SYMBOL) | NIL | BOOLEAN | CHAR | READER_MACRO)
+<PROGRAM> = SEXPS
+SEXPS = (SEXP | WHITESPACE)+
+SEXP = ((REGEX / STRING) | COLLECTION | NUMBER | (BOOLEAN / NIL / KEYWORD / SYMBOL) | CHAR | READER_MACRO)
 
-WHITESPACE = (SPACE | COMMA | NEWLINE)
-<SPACE> = #"([ \t])+"
-COMMA = ","
+WHITESPACE = (#'[\s,]+' | COMMENT)
 
 NIL = "nil"
-BOOLEAN = TRUE | FALSE
-<TRUE> = "true"
-<FALSE> = "false"
+BOOLEAN = ("true" | "false")
 
 <UPPERALPHABETIC> = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
 <LOWERALPHABETIC> = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
@@ -19,39 +15,40 @@ NAMESPACE = LOWERALPHABETIC+ ("." LOWERALPHABETIC+)*
 <ALPHANUMERIC> = (ALPHABETIC | NUMBER)
 
 COLLECTION = (LIST | VECTOR | MAP | SET)
-<LIST> = '(' SEXPS* ')'
-<VECTOR> = "[" SEXPS* "]"
-MAP = "{" (SEXPS SEXPS)* "}"
-<SET> = "#{" SEXPS* "}" 
+LIST = '(' [SEXPS] ')'
+VECTOR = "[" [SEXPS] "]"
+MAP = "{" [SEXPS] "}"
+SET = "#{" [SEXPS] "}" 
 
 TAG = "#" (NAMESPACE "/") ALPHABETIC+
 
 KEYWORD = (":" | "::") SYMBOL
-SYMBOL = #'[\pL_$&/=+~<>\.|§?*-][\pL\p{Digit}_$&/=+~.:<>|§?*-]*'
+SYMBOL = !(BOOLEAN | NIL | CHAR) #'[\pL_$&%/=+<>\.|§?*-][\pL\p{Digit}_$&%/=+\'.:<>!|§?*-]*'
 
 
-STRING = '"' #'([^\"\\]|\\.)*' '"'
+STRING = '"' (#'([^\"\\\r\n]|\\.)*' NEWLINE?)+ '"'
 REGEX = '#' STRING
 
-CHAR = "\\" (ALPHABETIC | "newline" | "tab" | "return" | "space")
+CHAR = "\\" #"(space|return|tab|newline)|[a-zA-Z_$&%/=+<>\.\,|?*-]"
 
-COMMENT = ";" #'([^\n\r]|\\.)*' NEWLINE
-<NEWLINE> = "\r\n" | "\n" | "\r"
+COMMENT = ";" #'.*' NEWLINE
+<NEWLINE> = "\r\n" | "\n"
 DISCARD = "#_"
 
 NUMBER = #"\p{Digit}+"
 
 (* Reader Macros *)
-READER_MACRO = (meta_data | var_quote | dispatch | deref | quote | backtick | unquote | unquote_splicing | gensym | type_ann)
+READER_MACRO = (meta_data | var_quote | dispatch | lambda | deref | quote | backtick | unquote | unquote_splicing | gensym | type_ann)
 
-<meta_data> = CARAT (MAP | KEYWORD)
+<meta_data> = CARAT (MAP | KEYWORD | STRING)
 <type_ann> = CARAT SYMBOL
 CARAT = '^'
 var_quote = '#\'' SYMBOL
 dispatch = '#' SYMBOL SEXP
+lambda = '#' LIST
 deref = '@' SEXP
 <quote> = '\'' SEXP
 backtick = '`' SEXP
-unquote = '~' SEXP
+unquote = !'~@' '~' SEXP
 unquote_splicing = '~@' SEXP
 gensym = SYMBOL '#'

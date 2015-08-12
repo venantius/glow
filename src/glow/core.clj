@@ -259,8 +259,12 @@
      :BOOLEAN (comp ansi/cyan str)
      :WHITESPACE str
      :STRING (comp ansi/cyan str)
-     :COLLECTION colorize-collection
+
+     :COLLECTION str
      :MAP colorize-collection
+     :LIST colorize-collection
+     :VECTOR colorize-collection
+
      :READER_MACRO (comp ansi/red str)
      :CARAT (comp ansi/red str)
      :DEREF_CHAR (comp ansi/red str)
