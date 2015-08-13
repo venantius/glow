@@ -32,6 +32,7 @@
    :keyword :green
    :comment :bright-green
    :string :cyan
+   :character :cyan
    :regex :red})
 
 (defn split-in-two
@@ -44,83 +45,33 @@
   [s hl-type]
   (((get colorscheme hl-type :default) ansi-fn-map) s))
 
-(defn- highlight-exception
-  "Highlight Clojure exception keywords."
-  [s]
-  (if-let [match (regex/match-exception s)]
-    (colorize s :exception)
-    s))
-
-(defn highlight-repeat
-  "Highlight clojure.core repeat keywords."
-  [s]
-  (if-let [match (regex/match-repeat s)]
-    (colorize s :repeat)
-    (highlight-exception s)))
-
-(defn- highlight-conditional
-  "Highlight clojure.core conditionals."
-  [s]
-  (if-let [match (regex/match-conditional s)]
-    (colorize s :conditional)
-    (highlight-repeat s)))
-
-(defn- highlight-variable
-  "Highlight clojure.core variables."
-  [s]
-  (if-let [match (regex/match-variable s)]
-    (colorize s :variable)
-    (highlight-conditional s)))
-
-(defn- highlight-core-fn
-  "Highlight functions in clojure.core."
-  [s]
-  (if-let [match (regex/match-core-fn s)]
-    (colorize s :core-fn)
-    (highlight-variable s)))
-
-(defn- highlight-definition
-  "Highlight definitions."
-  [s]
-  (if-let [match (regex/match-definition s)]
-    (colorize s :definition)
-    (highlight-core-fn s)))
-
-(defn- highlight-reader-char
-  "Highlight reader characters."
-  [s]
-  (if-let [match (regex/match-reader-char s)]
-    (colorize s :reader-char)
-    (highlight-definition s)))
-
-(defn- highlight-special-form
-  "Highlight special forms."
-  [s]
-  (if-let [match (regex/match-special s)]
-    (colorize s :special-form)
-    (highlight-reader-char s)))
-
-(defn- highlight-macro
-  "Highlight macros."
-  [s]
-  (if-let [match (regex/match-macro s)]
-    (colorize s :macro)
-    (highlight-special-form s)))
-
-(defn highlight-special-symbol
+(defn colorize-special-symbol
   "Check to see if this symbol is a known macro, special form, function, etc."
   [s]
-  (highlight-macro s))
+  (if-let [symbol-type
+           (cond
+             (regex/match-macro s) :macro
+             (regex/match-special s) :special-form
+             (regex/match-reader-char s) :reader-char
+             (regex/match-definition s) :definition
+             (regex/match-core-fn s) :core-fn
+             (regex/match-variable s) :variable
+             (regex/match-conditional s) :conditional
+             (regex/match-repeat s) :repeat
+             (regex/match-exception s) :exception)]
+    (colorize s symbol-type)
+    s))
 
 (defn colorize-collection
   [& args]
-  (str (ansi/red (first args))
+  (str (colorize (first args) :s-exp)
        (apply str (rest (butlast args)))
-       (ansi/red (last args))))
+       (colorize (last args) :s-exp)))
 
 (defn colorize-reader-macro
   [& args]
-  (str (ansi/red (first args)) (apply str (rest args))))
+  (str (colorize (first args) :reader-char)
+       (apply str (rest args))))
 
 (defn colorize-antlr
   [d]
@@ -128,39 +79,49 @@
    {:simple_sym str
     :simple_keyword str
     :ns_symbol str
-    :var_quote colorize-reader-macro
-    :unquote colorize-reader-macro
-    :unquote_splicing colorize-reader-macro
+
+    ;; literals
+    :literal str
+    :string (comp #(colorize % :string) str)
+    :regex (comp #(colorize % :regex) str)
+    :number (comp #(colorize % :number) str)
+    :character (comp #(colorize % :character) str)
+    :nil (comp #(colorize % :nil) str)
+    :boolean (comp #(colorize % :boolean) str)
+    :keyword (comp #(colorize % :keyword) str)
+    :symbol colorize-special-symbol
+    :param_name (comp #(colorize % :reader-char) str)
+
+    ;; reader macro characters
+    :reader_macro str
     :quote colorize-reader-macro
     :backtick colorize-reader-macro
+    :unquote colorize-reader-macro
+    :unquote_splicing colorize-reader-macro
     :tag colorize-reader-macro
-    :lambda colorize-reader-macro
     :deref colorize-reader-macro
-    :param_name (comp ansi/red str)
-    :nil (comp ansi/cyan str)
-    :boolean (comp ansi/cyan str)
-    :comment (comp ansi/bright-green str)
-    :reader_macro str
-    :string (comp ansi/cyan str)
-    :regex (comp ansi/red str)
-    :keyword (comp ansi/green str)
-    :symbol highlight-special-symbol
-    :literal str
-    :form str
-    :forms str
-    :whitespace str
+    :gensym colorize-reader-macro
+    :lambda colorize-reader-macro
+    :meta_data colorize-reader-macro
+    :var_quote colorize-reader-macro
+    :host_expr colorize-reader-macro
+    :discard colorize-reader-macro
+    :dispatch colorize-reader-macro
+
+    ;; top level
     :file str
+    :forms str
+    :form str
+
+    ;; collections
     :map colorize-collection
     :list colorize-collection
     :vector colorize-collection
     :set colorize-collection
-    ;; numbers
-    :number (comp ansi/cyan str)
-    :float str
-    :hex str
-    :bin str
-    :bign str
-    :long str}
+
+    ;; extras
+    :comment (comp ansi/bright-green str)
+    :whitespace str}
    (vec d)))
 
 (defn highlight

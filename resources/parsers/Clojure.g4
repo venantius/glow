@@ -31,6 +31,7 @@ form: comment | whitespace | literal
     | list
     | vector
     | map
+    | set
     | reader_macro
     ;
 
@@ -47,10 +48,8 @@ set: '#{' forms '}' ;
 reader_macro
     : lambda
     | meta_data
-    | regex
     | var_quote
     | host_expr
-    | set
     | tag
     | discard
     | dispatch
@@ -115,12 +114,9 @@ dispatch
     : '#' symbol form
     ;
 
-regex
-    : '#' string
-    ;
-
 literal
     : string
+    | regex
     | number
     | character
     | nil
@@ -131,17 +127,17 @@ literal
     ;
 
 string: STRING;
-float: FLOAT;
-hex: HEX;
-bin: BIN;
-bign: BIGN;
-long: LONG;
+
+regex
+    : '#' string
+    ;
+
 number
-    : float
-    | hex
-    | bin
-    | bign
-    | long
+    : FLOAT
+    | HEX
+    | BIN
+    | BIGN
+    | LONG
     ;
 
 character
