@@ -65,7 +65,7 @@ When filing issues, please include the following:
 
 ## Special Thanks
 
-I owe a big debt of gratitude to the authors, contributors and maintainers of [vim-clojure-static](https://github.com/guns/vim-clojure-static), which was a big inspiration. I also owe thanks to Alex Engelberg and Kyle Kingsbury (@aphyr) - the former helped me when I was trying to use Instaparse, and the latter I owe a huge favor to for making an accessible Clojure library for ANTLR.
+I owe a big debt of gratitude to the authors, contributors and maintainers of [vim-clojure-static](https://github.com/guns/vim-clojure-static), which was a big inspiration. I also owe thanks to Alex Engelberg and Kyle Kingsbury ([@aphyr](https://github.com/aphyr)) - the former helped me work on an EBNF grammar for Clojure, and the latter I owe for making an accessible Clojure library for ANTLR.
 
 ## License
 
