@@ -7,6 +7,10 @@
 (def reset-font
   (str csi suffix))
 
+(defn default
+  [s]
+  (str reset-font s))
+
 (defn black
   [s]
   (str csi 30 suffix s reset-font))

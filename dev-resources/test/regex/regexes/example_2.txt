@@ -1,1 +1,0 @@
-first "some" other text and in the midst a #"(regex)" followed by some others

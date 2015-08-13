@@ -10,7 +10,7 @@ code.
 To use Glow in your project, just add the following to the `:dependencies` key of your `project.clj`:
 
 ```clojure
-[venantius/glow "0.1.0"]
+[venantius/glow "0.1.1"]
 ```
 
 ## Usage
@@ -52,15 +52,20 @@ Take a look at `glow.core/colorscheme` to see how this should be structured.
 
 ## Contributing
 
-I'm interested in making the regular expressions in Glow faster and more robust. Frankly, I'm not an expert in regexes, and some of my implementations could use a more critical eye.
+In general, bug reports, fixes, and code cleanup are always appreciated. 
+Feature requests are liable to be subject to a bit more discussion. 
 
-To that end, I'm actively soliciting pull requests to expand the regular expression test coverage and to detect and resolve failure cases.
+When filing issues, please include the following:
 
-If you're interested in making a different sort of contribution to the project, please make sure to open an issue before going straight to a pull request - I like to make sure there's a consensus that both of our time will be well spent.
+ * The operating system
+ * The JDK version
+ * The Leiningen version
+ * The Clojure version
+ * Any plugins and dependencies in your `project.clj` and your `~/.lein/profiles.clj`
 
 ## Special Thanks
 
-I owe a big debt of gratitude to the authors, contributors and maintainers of [vim-clojure-static](https://github.com/guns/vim-clojure-static), whose work was a constant reference as I was writing Glow's regular expressions.
+I owe a big debt of gratitude to the authors, contributors and maintainers of [vim-clojure-static](https://github.com/guns/vim-clojure-static), which was a big inspiration. I also owe thanks to Alex Engelberg and Kyle Kingsbury (@aphyr) - the former helped me when I was trying to use Instaparse, and the latter I owe a huge favor to for making an accessible Clojure library for ANTLR.
 
 ## License
 
