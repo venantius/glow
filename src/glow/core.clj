@@ -44,143 +44,128 @@
   [s hl-type]
   (((get colorscheme hl-type :default) ansi-fn-map) s))
 
-(defn colorize-and-recurse
-  "Given a string, a known substring, a callback function, and the Clojure
-  literal type, split the string in half around the substring, then re-join:
-   - the results of the callback function on the first half
-   - the colorized substring
-   - the results of the callback function on the second half"
-  [s match callback hl-type]
-  (let [[pre post] (split-in-two s match)]
-    (str (callback pre)
-         (((get colorscheme hl-type :default) ansi-fn-map) match)
-         (callback post))))
-
-(defn- highlight-exceptions
+(defn- highlight-exception
   "Highlight Clojure exception keywords."
   [s]
   (if-let [match (regex/match-exception s)]
-    (colorize-and-recurse s match highlight-exceptions :exception)
+    (colorize s :exception)
     s))
 
-(defn highlight-repeats
+(defn highlight-repeat
   "Highlight clojure.core repeat keywords."
   [s]
   (if-let [match (regex/match-repeat s)]
-    (colorize-and-recurse s match highlight-repeats :repeat)
-    (highlight-exceptions s)))
+    (colorize s :repeat)
+    (highlight-exception s)))
 
-(defn- highlight-conditionals
+(defn- highlight-conditional
   "Highlight clojure.core conditionals."
   [s]
   (if-let [match (regex/match-conditional s)]
-    (colorize-and-recurse s match highlight-conditionals :conditional)
-    (highlight-repeats s)))
+    (colorize s :conditional)
+    (highlight-repeat s)))
 
-(defn- highlight-variables
+(defn- highlight-variable
   "Highlight clojure.core variables."
   [s]
   (if-let [match (regex/match-variable s)]
-    (colorize-and-recurse s match highlight-variables :variable)
-    (highlight-conditionals s)))
+    (colorize s :variable)
+    (highlight-conditional s)))
 
-(defn- highlight-core-fns
+(defn- highlight-core-fn
   "Highlight functions in clojure.core."
   [s]
   (if-let [match (regex/match-core-fn s)]
-    (colorize-and-recurse s match highlight-core-fns :core-fn)
-    (highlight-variables s)))
+    (colorize s :core-fn)
+    (highlight-variable s)))
 
-(defn- highlight-definitions
+(defn- highlight-definition
   "Highlight definitions."
   [s]
   (if-let [match (regex/match-definition s)]
-    (colorize-and-recurse s match highlight-definitions :definition)
-    (highlight-core-fns s)))
+    (colorize s :definition)
+    (highlight-core-fn s)))
 
-(defn- highlight-reader-chars
+(defn- highlight-reader-char
   "Highlight reader characters."
   [s]
   (if-let [match (regex/match-reader-char s)]
-    (colorize-and-recurse s match highlight-reader-chars :reader-char)
-    (highlight-definitions s)))
+    (colorize s :reader-char)
+    (highlight-definition s)))
 
-(defn- highlight-special-forms
+(defn- highlight-special-form
   "Highlight special forms."
   [s]
   (if-let [match (regex/match-special s)]
-    (colorize-and-recurse s match highlight-special-forms :special-form)
-    (highlight-reader-chars s)))
+    (colorize s :special-form)
+    (highlight-reader-char s)))
 
-(defn- highlight-macros
+(defn- highlight-macro
   "Highlight macros."
   [s]
   (if-let [match (regex/match-macro s)]
-    (colorize-and-recurse s match highlight-macros :macro)
-    (highlight-special-forms s)))
+    (colorize s :macro)
+    (highlight-special-form s)))
 
-(defn- highlight-numbers
-  "Highlight numbers."
+(defn highlight-special-symbol
+  "Check to see if this symbol is a known macro, special form, function, etc."
   [s]
-  (if-let [match (regex/match-number s)]
-    (colorize-and-recurse s match highlight-macros :number)
-    (highlight-macros s)))
+  (highlight-macro s))
 
-(defn- highlight-booleans
-  "Highlight booleans."
-  [s]
-  (if-let [match (regex/match-bool s)]
-    (colorize-and-recurse s match highlight-booleans :boolean)
-    (highlight-numbers s)))
+(defn colorize-collection
+  [& args]
+  (str (ansi/red (first args))
+       (apply str (rest (butlast args)))
+       (ansi/red (last args))))
 
-(defn- highlight-nils
-  "Highlight nils."
-  [s]
-  (if-let [match (regex/match-nil s)]
-    (colorize-and-recurse s match highlight-nils :nil)
-    (highlight-booleans s)))
+(defn colorize-reader-macro
+  [& args]
+  (str (ansi/red (first args)) (apply str (rest args))))
 
-(defn- highlight-s-exps
-  "Highlight s-expressions."
-  [s]
-  (if-let [match (regex/match-s-exp s)]
-    (colorize-and-recurse s match highlight-s-exps :s-exp)
-    (highlight-nils s)))
-
-(defn- highlight-keywords
-  "Highlight keywords."
-  [s]
-  (if-let [match (regex/match-keyword s)]
-    (colorize-and-recurse s match highlight-keywords :keyword)
-    (highlight-s-exps s)))
-
-(defn- highlight-comments
-  "Highlight comments."
-  [s]
-  (if-let [match (regex/match-comment s)]
-    (colorize-and-recurse s match highlight-comments :comment)
-    (highlight-keywords s)))
-
-(defn- highlight-strings
-  "Highlight string literals."
-  [s]
-  (if-let [match (regex/match-string s)]
-    (colorize-and-recurse s match highlight-strings :string)
-    (highlight-comments s)))
-
-(defn- highlight-regexes
-  "Highlight regular expression literals."
-  [s]
-  (if-let [match (regex/match-regex s)]
-    (colorize-and-recurse s match highlight-regexes :regex)
-    (highlight-strings s)))
+(defn colorize-antlr
+  [d]
+  (insta/transform
+   {:simple_sym str
+    :simple_keyword str
+    :ns_symbol str
+    :var_quote colorize-reader-macro
+    :unquote colorize-reader-macro
+    :unquote_splicing colorize-reader-macro
+    :quote colorize-reader-macro
+    :backtick colorize-reader-macro
+    :tag colorize-reader-macro
+    :lambda colorize-reader-macro
+    :deref colorize-reader-macro
+    :param_name (comp ansi/red str)
+    :nil (comp ansi/cyan str)
+    :boolean (comp ansi/cyan str)
+    :comment (comp ansi/bright-green str)
+    :reader_macro str
+    :string (comp ansi/cyan str)
+    :regex (comp ansi/red str)
+    :keyword (comp ansi/green str)
+    :symbol highlight-special-symbol
+    :literal str
+    :form str
+    :forms str
+    :whitespace str
+    :file str
+    :map colorize-collection
+    :list colorize-collection
+    :vector colorize-collection
+    :set colorize-collection
+    ;; numbers
+    :number (comp ansi/cyan str)
+    :float str
+    :hex str
+    :bin str
+    :bign str
+    :long str}
+   (vec d)))
 
 (defn highlight
-  "Highlight a string of Clojure source. This functions by pattern matching
-  on the following literals, in order: regular expressions, strings, comments,
-  keywords, s-expressions, nils, booleans, numbers, clojure.core macros,
-  special forms, reader characters, definitions, clojure.core functions,
-  clojure.core variables, conditionals, repeat forms, and exceptions.
+  "Given a string of valid Clojure source code, parse it and return a
+  syntax-highlighted string of the same.
 
   By default, highlight uses `glow.core/colorscheme` to figure out which
   ANSI colors to use. If you want to use a different colorscheme, just
@@ -190,113 +175,9 @@
     {:string :blue
      :number :green}"
   ([s]
-   (highlight-regexes s))
+   (colorize-antlr (parse/parse s)))
   ([s opts]
    (with-redefs [colorscheme (if opts
                                opts
                                colorscheme)]
-     (highlight-regexes s))))
-
-(declare parse)
-
-(defn highlight-comment
-  [match s]
-  (let [match (apply str match)]
-    (str (colorize match :comment)
-         (parse (second (split-in-two s match))))))
-
-(defn whitespace
-  [match s]
-  (str (apply str match) (parse (second (split-in-two s (apply str match))))))
-
-(defn highlight-s-exp
-  [match s]
-  (str (colorize (first match) :s-exp)
-       (parse (apply str (parse/un-nest (rest (butlast match)))))
-       (colorize (last match) :s-exp)))
-
-(defn highlight-symbol
-  [match s]
-  (let [match (apply str match)]
-    (str match (parse (second (split-in-two s match))))))
-
-(defn highlight-reader-macro
-  [match s]
-  (str (colorize (apply str (first match)) :reader-char)
-       (parse (apply str (rest s)))))
-
-(defn highlight-keyword
-  [match s]
-  (let [match (apply str (first match) (parse/un-nest (rest match)))]
-    (str (colorize match :keyword)
-         (parse (second (split-in-two s match))))))
-
-(defn highlight-string
-  [match s]
-  (let [match (apply str match)]
-    (str (colorize match :string)
-         (parse (second (split-in-two s match))))))
-
-(defn colorize-collection
-  [& args]
-  (str (ansi/red (first args))
-       (apply str (rest (butlast args)))
-       (ansi/red (last args))))
-
-(defn colorize-keyword
-  [& args]
-  (ansi/green (str (first args)
-                   (second args))))
-
-(defn trans-colorize
-  [d]
-  (insta/transform
-   {:SYMBOL str
-    :KEYWORD colorize-keyword
-    :COMMENT (comp ansi/bright-green str)
-    :SEXPS (comp str)
-    :SEXP str
-    :BOOLEAN (comp ansi/cyan str)
-    :WHITESPACE str
-    :STRING (comp ansi/cyan str)
-
-    :COLLECTION str
-    :MAP colorize-collection
-    :LIST colorize-collection
-    :VECTOR colorize-collection
-
-    :READER_MACRO (comp ansi/red str)
-    :CARAT (comp ansi/red str)
-    :DEREF_CHAR (comp ansi/red str)
-    :NUMBER (comp ansi/cyan str)}
-   d))
-
-(defn colorize-antlr
-  [d]
-  (insta/transform
-   {
-    :simple_sym identity
-    :string (comp ansi/cyan str)
-    :ns_symbol str
-    :long str
-    :literal str
-    :form str
-    :forms str
-    :list colorize-collection
-    :vector colorize-collection
-    :number (comp ansi/cyan str)
-    }
-   (vec d)))
-
-(defn boop
-  [s]
-  (when (and s (not-empty s))
-    (let [matched (insta/parse parse/clj-parser s :partial true)]
-      (str
-       (trans-colorize (first matched))
-       (boop (second (split-in-two s (first (parse/un-nest matched)))))))))
-
-(defn highlight-2
-  [s]
-  (println (parse s))
-  (newline))
+     (highlight s))))

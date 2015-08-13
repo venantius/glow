@@ -12,14 +12,14 @@
               "\n\n"
               (ansi/red "(")
               (ansi/bright-red "defn")
-              " func\n "
+              " func\n  "
               (ansi/red "[")
               (ansi/red "^")
               "Throwable x "
               (ansi/red "&")
               " y"
               (ansi/red "]")
-              "\n "
+              "\n  "
               (ansi/red "(")
               (ansi/blue "conj")
               " "

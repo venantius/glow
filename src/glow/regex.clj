@@ -23,46 +23,6 @@
         (keywords->regex-pattern (slurp (io/resource resource)))
         ")(?![\\w-])")))
 
-(defn match-regex
-  "Parse a string of source code and try to match on regex literals."
-  [s]
-  (first (re-find #"#\"(\\.|[^\"])*\"" s)))
-
-(defn match-string
-  "Parse a string of source code and try to match on string literals."
-  [s]
-  (re-find #"\"(?:\\.|[^\"])*\"" s))
-
-(defn match-comment
-  "Parse a string of source code and try to match on comments"
-  [s]
-  (re-find #"(?:;.*\n)" s))
-
-(defn match-keyword
-  "Parse a string of source code and try to match on keywords"
-  [s]
-  (re-find #"(?::{1,2}[^\ ][0-9a-z:?.$!*-_]*)" s))
-
-(defn match-s-exp
-  "Parse a string of source code and try to match on s-expressions"
-  [s]
-  (re-find #"(?:[\[\]\(\){}])" s))
-
-(defn match-nil
-  "Parse a string of source code and try to match on nil."
-  [s]
-  (re-find #"(?s:nil)" s))
-
-(defn match-bool
-  "Parse a string of source code and try to match on booleans."
-  [s]
-  (re-find #"(?s:true|false)" s))
-
-(defn match-number
-  "Parse a string of source code and try to match on numbers."
-  [s]
-  (re-find #"(?:\d+\.\d+|\d+)" s))
-
 (def special-keyword-regex
   (core-keyword-pattern "keywords/special.txt"))
 
