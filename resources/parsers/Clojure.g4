@@ -91,7 +91,7 @@ gensym
     ;
 
 lambda
-    : '#(' form* ')'
+    : '#' list
     ;
 
 meta_data
@@ -153,8 +153,8 @@ nil: NIL;
 boolean: BOOLEAN;
 
 keyword: macro_keyword | simple_keyword;
-simple_keyword: ':' symbol;
-macro_keyword: ':' ':' symbol;
+simple_keyword: ':' (ns_symbol | simple_sym);
+macro_keyword: ':' ':' (ns_symbol | simple_sym);
 
 symbol: ns_symbol | simple_sym;
 simple_sym: SYMBOL;

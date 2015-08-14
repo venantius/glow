@@ -10,7 +10,7 @@ code.
 To use Glow in your project, just add the following to the `:dependencies` key of your `project.clj`:
 
 ```clojure
-[venantius/glow "0.1.1"]
+[venantius/glow "0.1.2"]
 ```
 
 ## Usage
@@ -65,10 +65,10 @@ When filing issues, please include the following:
 
 ## Special Thanks
 
-I owe a big debt of gratitude to the authors, contributors and maintainers of [vim-clojure-static](https://github.com/guns/vim-clojure-static), which was a big inspiration. I also owe thanks to Alex Engelberg and Kyle Kingsbury ([@aphyr](https://github.com/aphyr)) - the former helped me work on an EBNF grammar for Clojure, and the latter I owe for making an accessible Clojure library for ANTLR.
+I owe a big debt of gratitude to the authors, contributors and maintainers of [vim-clojure-static](https://github.com/guns/vim-clojure-static) for their lists of keywords. I also owe thanks to Alex Engelberg and Kyle Kingsbury ([@aphyr](https://github.com/aphyr)) - the former helped me work on an EBNF grammar for Clojure, and the latter for writing [clj-antlr](https://github.com/aphyr/clj-antlr).
 
 ## License
 
 Copyright © 2015 W. David Jarvis
 
-Distributed under the Eclipse Public License 1.0, the same as Clojure.
+Distributed under the Eclipse Public License 1.0, the same as Clojure. Parts of the ANTLR code are covered by the BSD license.

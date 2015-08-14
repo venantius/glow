@@ -73,11 +73,17 @@
   (str (colorize (first args) :reader-char)
        (apply str (rest args))))
 
+(defn reverse-colorize-reader-macro
+  [& args]
+  (str (first args)
+       (colorize (second args) :reader-char)))
+
 (defn colorize-antlr
   [d]
   (insta/transform
    {:simple_sym str
     :simple_keyword str
+    :macro_keyword str
     :ns_symbol str
 
     ;; literals
@@ -100,7 +106,7 @@
     :unquote_splicing colorize-reader-macro
     :tag colorize-reader-macro
     :deref colorize-reader-macro
-    :gensym colorize-reader-macro
+    :gensym reverse-colorize-reader-macro
     :lambda colorize-reader-macro
     :meta_data colorize-reader-macro
     :var_quote colorize-reader-macro

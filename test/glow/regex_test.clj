@@ -4,43 +4,46 @@
             [glow.regex :as regex]))
 
 (deftest match-special-works
-  (is (= "monitor-exit" (regex/match-special "(monitor-exit ...)")))
-  (is (= "set!" (regex/match-special "set! foo bar"))))
+  (is (true? (regex/match-special "monitor-exit")))
+  (is (true? (regex/match-special "set!"))))
 
 (deftest match-definition-works
-  (is (= "clojure.core/defn-" (regex/match-definition "(clojure.core/defn- bar [] true")))
-  (is (= "defonce" (regex/match-definition "(defonce bar [])"))))
+  (is (true? (regex/match-definition "clojure.core/defn-")))
+  (is (true? (regex/match-definition "defonce")))
+  (is (false? (regex/match-definition "def"))))
 
 (deftest match-macro-works
-  (is (= "->" (regex/match-macro "(-> 5 (* 2))")))
-  (is (= "io!" (regex/match-macro "(io! ...)")))
-  (is (= ".." (regex/match-macro "(.. System (getProperties) (get \"os.name\"))"))))
+  (is (true? (regex/match-macro "->")))
+  (is (true? (regex/match-macro "io!")))
+  (is (true? (regex/match-macro ".."))))
 
 (deftest match-core-fn-works
-  (is (= "*" (regex/match-core-fn "(* 1 1)")))
-  (is (= "+" (regex/match-core-fn "(+ 1 1)")))
-  (is (= "->ArrayChunk" (regex/match-core-fn "(->ArrayChunk [])")))
-  (is (= "neg?" (regex/match-core-fn "(neg? -5")))
-  (is (= "empty?" (regex/match-core-fn "(empty? {})")))
-  (is (= "empty" (regex/match-core-fn "(empty [])"))))
+  (is (true? (regex/match-core-fn "*")))
+  (is (true? (regex/match-core-fn "+")))
+  (is (true? (regex/match-core-fn "neg?")))
+  (is (true? (regex/match-core-fn "empty?")))
+  (is (true? (regex/match-core-fn "empty")))
+  (is (false? (regex/match-core-fn "run-tests")))
+  (is (false? (regex/match-core-fn "clojure.test"))))
 
 (deftest match-variable-works
-  (is (= "*1" (regex/match-variable "(def bar *1)")))
-  (is (= "clojure.core/*print-length*" (regex/match-variable "clojure.core/*print-length*"))))
+  (is (true? (regex/match-variable "*1")))
+  (is (true? (regex/match-variable "clojure.core/*print-length*"))))
 
 (deftest match-conditional-works
-  (is (= "case" (regex/match-conditional "(case ...")))
-  (is (= "clojure.core/cond->" (regex/match-conditional "(clojure.core/cond->")))
-  (is (= "cond->>" (regex/match-conditional "cond->>")))
-  (is (= "clojure.core/when-some" (regex/match-conditional "clojure.core/when-some"))))
+  (is (true? (regex/match-conditional "case")))
+  (is (false? (regex/match-conditional "(case ...")))
+  (is (true? (regex/match-conditional "clojure.core/cond->")))
+  (is (true? (regex/match-conditional "cond->>")))
+  (is (true? (regex/match-conditional "clojure.core/when-some"))))
 
 (deftest match-repeat-works
-  (is (= "doseq" (regex/match-repeat "(doseq ..)")))
-  (is (= "clojure.core/dotimes" (regex/match-repeat "(clojure.core/dotimes ...)")))
-  (is (= "while" (regex/match-repeat "while ..."))))
+  (is (true? (regex/match-repeat "doseq")))
+  (is (true? (regex/match-repeat "clojure.core/dotimes")))
+  (is (true? (regex/match-repeat "while"))))
 
 (deftest match-exception-works
-  (is (= "catch" (regex/match-exception "(catch Exception e (println e))")))
-  (is (= "finally" (regex/match-exception "(finally ...)")))
-  (is (= "throw" (regex/match-exception "(throw ...)")))
-  (is (= "try" (regex/match-exception "(try ..."))))
+  (is (true? (regex/match-exception "catch")))
+  (is (true? (regex/match-exception "finally")))
+  (is (true? (regex/match-exception "throw")))
+  (is (true? (regex/match-exception "try"))))

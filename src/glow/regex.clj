@@ -19,9 +19,9 @@
 (defn core-keyword-pattern
   [resource]
   (re-pattern
-   (str "(?<![\\w-])(?:"
+   (str "(?:"
         (keywords->regex-pattern (slurp (io/resource resource)))
-        ")(?![\\w-])")))
+        ")")))
 
 (def special-keyword-regex
   (core-keyword-pattern "keywords/special.txt"))
@@ -50,41 +50,42 @@
 (defn match-special
   "Match special forms."
   [s]
-  (re-find special-keyword-regex s))
+  (= (re-find special-keyword-regex s) s))
 
 (defn match-reader-char
   "Match a Clojure reader character."
   [s]
-  (re-find #"(?:\~@|\~|@|`|\^|'|&)" s))
+  (= (re-find #"(?:\~@|\~|@|`|\^|'|&)" s) s))
 
 (defn match-definition
   "Match a clojure.core definition form."
   [s]
-  (re-find definition-keyword-regex s))
+  (= (re-find definition-keyword-regex s) s))
 
 (defn match-macro
   "Match a clojure.core macro."
   [s]
-  (re-find macro-keyword-regex s))
+  (= (re-find macro-keyword-regex s) s))
 
 (defn match-core-fn
   "Match a clojure.core function."
   [s]
-  (re-find function-keyword-regex s))
+  (= (re-find function-keyword-regex s) s))
 
 (defn match-variable
   "Match a clojure.core variable."
   [s]
-  (re-find variable-keyword-regex s))
+  (= (re-find variable-keyword-regex s) s))
 
 (defn match-conditional
+  "Match a clojure.core conditional."
   [s]
-  (re-find cond-keyword-regex s))
+  (= (re-find cond-keyword-regex s) s))
 
 (defn match-repeat
   [s]
-  (re-find repeat-keyword-regex s))
+  (= (re-find repeat-keyword-regex s) s))
 
 (defn match-exception
   [s]
-  (re-find exception-keyword-regex s))
+  (= (re-find exception-keyword-regex s) s))
