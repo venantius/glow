@@ -132,7 +132,9 @@ regex
     : '#' string
     ;
 
-number
+number: NUMBER;
+
+NUMBER
     : FLOAT
     | HEX
     | BIN
@@ -152,8 +154,9 @@ u_hex_quad: CHAR_U ;
 nil: NIL;
 boolean: BOOLEAN;
 
+
 keyword: macro_keyword | simple_keyword;
-simple_keyword: ':' (ns_symbol | simple_sym);
+simple_keyword: ':' (KWNAME | simple_sym | BOOLEAN | NIL | NUMBER);
 macro_keyword: ':' ':' (ns_symbol | simple_sym);
 
 symbol: ns_symbol | simple_sym;
@@ -232,6 +235,9 @@ fragment
 NAME: SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
 
 fragment
+KWNAME: (KW_CHAR+ '/')* KW_CHAR+;
+
+fragment
 SYMBOL_HEAD
     : ~('0' .. '9'
         | '^' | '`' | '\'' | '"' | '#' | '~' | '@' | ':' | '/' | '%' | '(' | ')' | '[' | ']' | '{' | '}' // FIXME: could be one group
@@ -244,6 +250,14 @@ SYMBOL_REST
     : SYMBOL_HEAD
     | '0'..'9'
     | '.'
+    ;
+
+// Keywords can include '#', '%' and numbers at the head.
+fragment
+KW_CHAR
+    : ~('^' | '`' | '\'' | '"' | '~' | '@' | ':' | '/' | '(' | ')' | '[' | ']' | '{' | '}' // FIXME: could be one group
+        | [ \n\r\t\,] // FIXME: could be WS
+        )
     ;
 
 // Whitespace, Comments
