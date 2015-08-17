@@ -1,26 +1,12 @@
-/* Reworked for grammar specificity by Reid Mckenzie. Did a bunch of
-   work so that rather than reading "a bunch of crap in parens" some
-   syntactic information is preserved and recovered. Dec. 14 2014.
+/*  
 
-   Converted to ANTLR 4 by Terence Parr. Unsure of provence. I see
-   it commited by matthias.koester for clojure-eclipse project on
-   Oct 5, 2009:
+    I took the grammar that was listed in the https://github.com/antlr/grammars-v4
+    repository and reworked the hell out of it. Without making any concrete
+    promises, this seems to deal reasonably well with a fairly decent volume
+    of core Clojure code, which makes me think it's in decent working form.
 
-   https://code.google.com/p/clojure-eclipse/
+    ~ Venantius, August 16 2015.
 
-   Seems to me Laurent Petit had a version of this. I also see
-   Jingguo Yao submitting a link to a now-dead github project on
-   Jan 1, 2011.
-
-   https://github.com/laurentpetit/ccw/tree/master/clojure-antlr-grammar
-
-   Regardless, there are some issues perhaps related to "sugar";
-   I've tried to fix them.
-
-   This parses https://github.com/weavejester/compojure project.
-
-   I also note this is hardly a grammar; more like "match a bunch of
-   crap in parens" but I guess that is LISP for you ;)
  */
 
 grammar Clojure;
@@ -129,7 +115,7 @@ literal
 string: STRING;
 
 regex
-    : '#' string
+    : '#' STRING
     ;
 
 number: NUMBER;
@@ -155,9 +141,8 @@ nil: NIL;
 boolean: BOOLEAN;
 
 
-keyword: macro_keyword | simple_keyword;
-simple_keyword: ':' (KWNAME | simple_sym | BOOLEAN | NIL | NUMBER);
-macro_keyword: ':' ':' (ns_symbol | simple_sym);
+keyword: KEYWORD;
+KEYWORD: (':' | '::') KWNAME;
 
 symbol: ns_symbol | simple_sym;
 simple_sym: SYMBOL;
@@ -168,7 +153,11 @@ param_name: PARAM_NAME;
 // Lexers
 //--------------------------------------------------------------------
 
-STRING : '"' ( ~'"' | '\\' '"' )* '"' ;
+STRING : '"' (~["\\] | ESCAPE | CHAR_NAMED | CHAR_ANY | CHAR_U)* '"' ;
+
+fragment
+ESCAPE:
+  '\\' ('b'|'t'|'n'|'f'|'r'|'"'|'\\');
 
 // FIXME: Doesn't deal with arbitrary read radixes, BigNums
 FLOAT
@@ -235,7 +224,7 @@ fragment
 NAME: SYMBOL_HEAD SYMBOL_REST* (':' SYMBOL_REST+)* ;
 
 fragment
-KWNAME: (KW_CHAR+ '/')* KW_CHAR+;
+KWNAME: ((SYMBOL_REST | '%' | '#')+ '/')* (SYMBOL_REST | '%' | '#')+;
 
 fragment
 SYMBOL_HEAD
@@ -252,19 +241,11 @@ SYMBOL_REST
     | '.'
     ;
 
-// Keywords can include '#', '%' and numbers at the head.
-fragment
-KW_CHAR
-    : ~('^' | '`' | '\'' | '"' | '~' | '@' | ':' | '/' | '(' | ')' | '[' | ']' | '{' | '}' // FIXME: could be one group
-        | [ \n\r\t\,] // FIXME: could be WS
-        )
-    ;
-
 // Whitespace, Comments
 //--------------------------------------------------------------------
 
 whitespace: WS;
-WS: [ \n\r\t\,]+;
+WS: [ \n\r\t,]+;
 
 comment: COMMENT_CHAR;
 COMMENT_CHAR: ';' ~[\n\r]+ '\n';

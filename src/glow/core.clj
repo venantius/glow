@@ -86,6 +86,11 @@
     :macro_keyword str
     :ns_symbol str
 
+    ;; characters
+    :named_char str
+    :any_char str
+    :u_hex_quad str
+
     ;; literals
     :literal str
     :string (comp #(colorize % :string) str)
