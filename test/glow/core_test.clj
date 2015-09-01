@@ -63,10 +63,6 @@
               "\n")
          (core/highlight (slurp (io/resource "test/core/sample.clj"))))))
 
-(deftest colorize-special-sybol-works
-  (testing "That this matches exactly 're' and not 'core.something' etc."
-    (is (= "re" (core/colorize-special-symbol core/colorscheme "re")))))
-
 (deftest highlight-works-with-optional-arg
   (is (= (ansi/blue "defn")
          (core/highlight "defn" {:definition :blue}))))
