@@ -35,19 +35,13 @@
    :character :cyan
    :regex :red})
 
-(defn split-in-two
-  "Given two strings, split the former on the first occurrence of the latter."
-  [s split]
-  (clojure.string/split s (re-pattern (java.util.regex.Pattern/quote split)) 2))
-
 (defn colorize
-  "Colorize a string with its highlight color."
-  [s hl-type]
+  [colorscheme s hl-type]
   (((get colorscheme hl-type :default) ansi-fn-map) s))
 
 (defn colorize-special-symbol
   "Check to see if this symbol is a known macro, special form, function, etc."
-  [s]
+  [colorscheme s]
   (if-let [symbol-type
            (cond
              (regex/match-macro s) :macro
@@ -59,81 +53,93 @@
              (regex/match-conditional s) :conditional
              (regex/match-repeat s) :repeat
              (regex/match-exception s) :exception)]
-    (colorize s symbol-type)
+    (colorize colorscheme s symbol-type)
     s))
 
 (defn colorize-collection
-  [& args]
-  (str (colorize (first args) :s-exp)
+  [colorscheme & args]
+  (str (colorize colorscheme (first args) :s-exp)
        (apply str (rest (butlast args)))
-       (colorize (last args) :s-exp)))
+       (colorize colorscheme (last args) :s-exp)))
 
 (defn colorize-reader-macro
-  [& args]
-  (str (colorize (first args) :reader-char)
+  [colorscheme & args]
+  (str (colorize colorscheme (first args) :reader-char)
        (apply str (rest args))))
 
 (defn reverse-colorize-reader-macro
-  [& args]
+  [colorscheme & args]
   (str (first args)
-       (colorize (second args) :reader-char)))
+       (colorize colorscheme (second args) :reader-char)))
 
-(defn colorize-antlr
-  [d]
-  (insta/transform
-   {:simple_sym str
-    :simple_keyword str
-    :macro_keyword str
-    :ns_symbol str
+(defn ansi-colorize
+  [colorscheme d]
+  (let [colorize-macro (partial
+                         colorize-reader-macro
+                         colorscheme)
+        reverse-colorize-macro (partial
+                                 reverse-colorize-reader-macro
+                                 colorscheme)
+        colorize-coll (partial
+                        colorize-collection
+                        colorscheme)
+        colorize-special-sym (partial
+                               colorize-special-symbol
+                               colorscheme)]
+    (insta/transform
+     {:simple_sym str
+      :simple_keyword str
+      :macro_keyword str
+      :ns_symbol str
 
-    ;; characters
-    :named_char str
-    :any_char str
-    :u_hex_quad str
+      ;; characters
+      :named_char str
+      :any_char str
+      :u_hex_quad str
 
-    ;; literals
-    :literal str
-    :string (comp #(colorize % :string) str)
-    :regex (comp #(colorize % :regex) str)
-    :number (comp #(colorize % :number) str)
-    :character (comp #(colorize % :character) str)
-    :nil (comp #(colorize % :nil) str)
-    :boolean (comp #(colorize % :boolean) str)
-    :keyword (comp #(colorize % :keyword) str)
-    :symbol colorize-special-symbol
-    :param_name (comp #(colorize % :reader-char) str)
+      ;; literals
+      :literal str
+      :string (comp #(colorize colorscheme % :string) str)
+      :regex (comp #(colorize colorscheme % :regex) str)
+      :number (comp #(colorize colorscheme % :number) str)
+      :character (comp #(colorize colorscheme % :character) str)
+      :nil (comp #(colorize colorscheme % :nil) str)
+      :boolean (comp #(colorize colorscheme % :boolean) str)
+      :keyword (comp #(colorize colorscheme % :keyword) str)
+      :symbol colorize-special-sym
+      :param_name (comp #(colorize colorscheme % :reader-char) str)
 
-    ;; reader macro characters
-    :reader_macro str
-    :quote colorize-reader-macro
-    :backtick colorize-reader-macro
-    :unquote colorize-reader-macro
-    :unquote_splicing colorize-reader-macro
-    :tag colorize-reader-macro
-    :deref colorize-reader-macro
-    :gensym reverse-colorize-reader-macro
-    :lambda colorize-reader-macro
-    :meta_data colorize-reader-macro
-    :var_quote colorize-reader-macro
-    :host_expr colorize-reader-macro
-    :discard colorize-reader-macro
-    :dispatch colorize-reader-macro
+      ;; reader macro characters
+      :reader_macro str
+      :quote colorize-macro
+      :backtick colorize-macro
+      :unquote colorize-macro
+      :unquote_splicing colorize-macro
+      :tag colorize-macro
+      :deref colorize-macro
+      :gensym reverse-colorize-macro
+      :lambda colorize-macro
+      :meta_data colorize-macro
+      :var_quote colorize-macro
+      :host_expr colorize-macro
+      :discard colorize-macro
+      :dispatch colorize-macro
 
-    ;; top level
-    :file str
-    :forms str
-    :form str
+      ;; top level
+      :file str
+      :forms str
+      :form str
 
-    ;; collections
-    :map colorize-collection
-    :list colorize-collection
-    :vector colorize-collection
-    :set colorize-collection
+      ;; collections
+      :map colorize-coll
+      :list colorize-coll
+      :vector colorize-coll
+      :set colorize-coll
 
-    ;; extras
-    :comment (comp ansi/bright-green str)
-    :whitespace str}
-   (vec d)))
+      ;; extras
+      :comment (comp ansi/bright-green str)
+      :whitespace str}
+     (vec d))))
 
 (defn highlight
   "Given a string of valid Clojure source code, parse it and return a
@@ -147,7 +153,7 @@
     {:string :blue
      :number :green}"
   ([s]
-   (colorize-antlr (parse/parse s)))
+   (ansi-colorize colorscheme (parse/parse s)))
   ([s opts]
    (with-redefs [colorscheme (if opts
                                opts

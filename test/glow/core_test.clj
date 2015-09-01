@@ -63,9 +63,9 @@
               "\n")
          (core/highlight (slurp (io/resource "test/core/sample.clj"))))))
 
-;; Note that this is more of a test of regular expressions
 (deftest colorize-special-sybol-works
-  (is (= "re" (core/colorize-special-symbol "re"))))
+  (testing "That this matches exactly 're' and not 'core.something' etc."
+    (is (= "re" (core/colorize-special-symbol core/colorscheme "re")))))
 
 (deftest highlight-works-with-optional-arg
   (is (= (ansi/blue "defn")
