@@ -1,12 +1,12 @@
 (ns glow.core
-  (:require [glow.ansi :as ansi]
+  (:require [glow.html :as html]
             [glow.parse :as parse]
-            [glow.regex :as regex]
             [glow.terminal :as terminal]
             [instaparse.core :as insta]))
 
 (def colorscheme
-  {:exception :green
+  {:background :black
+   :exception :green
    :repeat  :green
    :conditional :green
    :variable :blue
@@ -39,7 +39,24 @@
   ([s]
    (terminal/ansi-colorize colorscheme (parse/parse s)))
   ([s opts]
-   (with-redefs [colorscheme (if opts
-                               opts
-                               colorscheme)]
-     (highlight s))))
+   (terminal/ansi-colorize opts (parse/parse s))))
+
+(defn highlight-html
+  "Given a string of valid Clojure source code, parse it and return an HTML
+  document of the same with span classes set. This should be used in tandem
+  with `generate-css`."
+  [s]
+  (html/generate-html (parse/parse s)))
+
+(defn generate-css
+  "By default, generate-css uses `glow.core/colorscheme` to figure out which
+  colors to use. If you want to use a different colorscheme, just
+  pass in a map in a style akin to `glow.core/colorscheme` as an optional
+  second argument, e.g.:
+
+    {:string :blue
+     :number :green}"
+  ([]
+   (html/generate-css colorscheme))
+  ([opts]
+   (html/generate-css opts)))

@@ -54,17 +54,17 @@
 (defn ansi-colorize
   [colorscheme d]
   (let [colorize-macro (partial
-                         colorize-reader-macro
-                         colorscheme)
-        reverse-colorize-macro (partial
-                                 reverse-colorize-reader-macro
-                                 colorscheme)
-        colorize-coll (partial
-                        colorize-collection
+                        colorize-reader-macro
                         colorscheme)
+        reverse-colorize-macro (partial
+                                reverse-colorize-reader-macro
+                                colorscheme)
+        colorize-coll (partial
+                       colorize-collection
+                       colorscheme)
         colorize-special-sym (partial
-                               colorize-special-symbol
-                               colorscheme)]
+                              colorize-special-symbol
+                              colorscheme)]
     (insta/transform
      {:simple_sym str
       :simple_keyword str
@@ -119,4 +119,3 @@
       :comment (comp ansi/bright-green str)
       :whitespace str}
      (vec d))))
-
