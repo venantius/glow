@@ -67,7 +67,7 @@ secondary argument:
 
 ![](./doc/glow_2.png)
 
-Take a look at the colorschemes in `glow.colorscheme` to see how this should be structured.
+Take a look at the colorschemes in `glow.colorschemes` to see how this should be structured.
 
 ## Contributing
 
