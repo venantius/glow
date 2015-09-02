@@ -14,9 +14,7 @@
          <link rel=\"stylesheet\"
          href=\"demo.css\">"
              (core/highlight-html (slurp
-                                   (.getResourceAsStream
-                                    (clojure.lang.RT/baseLoader)
-                                    "clojure/core.clj")))
+                                   (io/resource "test/core/sample.clj")))
              "</html>")))
 
 (deftest generate-html-works

@@ -3,14 +3,16 @@
 [![Build Status](https://travis-ci.org/venantius/glow.svg?branch=master)](https://travis-ci.org/venantius/glow)
 
 A Clojure library for generating syntax-highlighted strings of Clojure source
-code.
+code. Glow is capable of generating both ANSI-escaped strings for terminal
+applications, and HTML/CSS targets for server-side generation syntax-highlighted
+templates.
 
 ## Installation
 
 To use Glow in your project, just add the following to the `:dependencies` key of your `project.clj`:
 
 ```clojure
-[venantius/glow "0.1.2"]
+[venantius/glow "0.1.3"]
 ```
 
 ## Usage
@@ -33,27 +35,46 @@ Let's say you've got a clojure file with the following contents:
        "false")))
 ```
 
-All we have to do is slurp that file and pass the string to `glow.core/highlight`:
+### ANSI-escaped Syntax Highlighting
+
+To generate an ANSI-escaped string of source code, all we have to do is slurp
+that file and pass the string to `glow.core/highlight`:
 
 ![](./doc/glow.png)
 
 Nice.
 
+### Server-side HTML/CSS Syntax Highlighting
+
+The two relevant functions you'll want are `glow.core/highlight-html`, and
+`glow.core/generate-css`. Glow's styling here is compatible with Pygment
+stylesheets.
+
+The API is very similar to terminal highlighting, but you'll need to generate
+both the CSS and the HTML separately and link them appropriately within your site.
+
+For an example, see `glow.html-test/generate-demo-page`, which generates the
+following:
+
+![](./doc/glow_3.png)
+
 ## Configuration
 
-Don't like the default colorscheme? No problem! 
+Don't like the default colorschemes? No problem!
 
 Pass a map with whatever highlighting options you want as an optional
 secondary argument:
 
 ![](./doc/glow_2.png)
 
-Take a look at `glow.core/colorscheme` to see how this should be structured.
+Take a look at the colorschemes in `glow.colorscheme` to see how this should be structured.
 
 ## Contributing
 
-In general, bug reports, fixes, and code cleanup are always appreciated. 
-Feature requests are liable to be subject to a bit more discussion. 
+In general, bug reports, fixes, and code cleanup are always appreciated. I'd
+also love PRs for additional colorschemes, particularly for HTML output.
+
+Feature requests are liable to be subject to a bit more discussion.
 
 When filing issues, please include the following:
 

@@ -5,27 +5,6 @@
             [glow.terminal :as terminal]
             [instaparse.core :as insta]))
 
-(def default-web-colorscheme
-  {:background :black
-   :exception :green
-   :repeat  :green
-   :conditional :green
-   :variable :blue
-   :core-fn :blue
-   :definition :bright-red
-   :reader-char :red
-   :special-form :red
-   :macro :bright-red
-   :number :cyan
-   :boolean :cyan
-   :nil :cyan
-   :s-exp :red
-   :keyword :green
-   :comment :bright-green
-   :string :cyan
-   :character :cyan
-   :regex :red})
-
 (defn highlight
   "Given a string of valid Clojure source code, parse it and return a
   syntax-highlighted string of the same.
