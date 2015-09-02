@@ -1,6 +1,7 @@
 (ns glow.html
   "Functions for generating styled HTML"
   (:require [garden.core :as garden]
+            [glow.regex :as regex]
             [hiccup.core :as hiccup]
             [instaparse.core :as insta]))
 
@@ -8,6 +9,22 @@
   [x]
   (fn [& args]
     [:span {:class x} (apply str args)]))
+
+(defn special-symbol-span-generator
+  [s]
+  (if-let [symbol-type
+           (cond
+             (regex/match-macro s) :macro
+             (regex/match-special s) :special-form
+             (regex/match-reader-char s) :reader-char
+             (regex/match-definition s) :definition
+             (regex/match-core-fn s) :core-fn
+             (regex/match-variable s) :variable
+             (regex/match-conditional s) :conditional
+             (regex/match-repeat s) :repeat
+             (regex/match-exception s) :exception)]
+    [:span {:class symbol-type} s]
+    [:span {:class "symbol"} s]))
 
 (defn macro-span-generator
   [& args]
@@ -46,7 +63,7 @@
     :nil (span-generator "nil")
     :boolean (span-generator "boolean")
     :keyword (span-generator "keyword")
-    :symbol (span-generator "symbol") ;; move to special keywords
+    :symbol special-symbol-span-generator
     :param_name (span-generator "keyword")
 
      ;; reader macro characters
