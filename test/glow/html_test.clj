@@ -6,13 +6,13 @@
 (defn generate-demo-page
   []
   (spit "demo.css"
-        (core/generate-css
-          {:s-exp "#dc322f"
-           :background "#002b36"
-           :symbol "#93a1a1"}))
+        (core/generate-css))
   (spit "demo.html"
-    (str "<html>
+        (str "<html>
          <link rel=\"stylesheet\"
          href=\"demo.css\">"
-         (core/highlight-html (slurp (io/resource "test/core/sample.clj")))
-         "</html>")))
+             (core/highlight-html (slurp
+                                   (.getResourceAsStream
+                                    (clojure.lang.RT/baseLoader)
+                                    "clojure/core.clj")))
+             "</html>")))

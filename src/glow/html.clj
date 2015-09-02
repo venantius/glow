@@ -6,8 +6,8 @@
 
 (defn span-generator
   [x]
-  (fn [y]
-    [:span {:class x} (apply str y)]))
+  (fn [& args]
+    [:span {:class x} (apply str args)]))
 
 (defn macro-span-generator
   [& args]
@@ -32,6 +32,10 @@
     :simple_keyword str
     :macro_keyword str
     :ns_symbol str
+
+    :named_char str
+    :any_char str
+    :u_hex_quad str
 
     ;; literals
     :literal identity
@@ -67,18 +71,20 @@
     :form (fn [& args] (concat args))
 
      ;; collections
-    ; :map colorize-collection
+    :map collection-span
     :list collection-span
     :vector collection-span
-    ; :set colorize-collection
+    :set collection-span
 
      ;; extras
-    :comment (comp str)
+    :comment (span-generator "comment")
     :whitespace str}
    (vec d)))
 
 (defn generate-html
   [d]
+  "Generate an HTML string of the input source string, wrapping it in a
+  <div class=\"syntax\"><pre> block."
   (hiccup/html [:div {:class "syntax"}
                 [:pre (hiccup-transform d)]]))
 
@@ -88,7 +94,7 @@
   (->> k name (str ".") keyword))
 
 (defn css-color
-  "Generate a garden-style css element with color styles."
+  "Generate a Garden-style css element with color styles."
   [[k v]]
   [(to-div k) {:color v}])
 
