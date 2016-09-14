@@ -1,6 +1,12 @@
+0.1.4
+ * Upgrade clj-antlr to "0.2.3"
+
+0.1.3
+ * Add support for the generation of server-side HTML to syntax highlight a block of input source code, as well as the associated CSS.
+
 0.1.2
  * Fixed a bug where our regular expressions were too aggressive.
- * Fixed a bug where Glow failed to transform macro keywords. 
+ * Fixed a bug where Glow failed to transform macro keywords.
  * Fixed a bug where Glow incorrectly colorized gensyms.
 
 0.1.1
