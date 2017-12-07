@@ -92,10 +92,10 @@ When filing issues, please include the following:
 
 ## Special Thanks
 
-I owe a big debt of gratitude to the authors, contributors and maintainers of [vim-clojure-static](https://github.com/guns/vim-clojure-static) for their lists of keywords. I also owe thanks to Alex Engelberg and Kyle Kingsbury ([@aphyr](https://github.com/aphyr)) - the former helped me work on an EBNF grammar for Clojure, and the latter for writing [clj-antlr](https://github.com/aphyr/clj-antlr).
+I owe a big debt of gratitude to the authors, contributors and maintainers of [vim-clojure-static](https://github.com/guns/vim-clojure-static) for their lists of keywords. I also owe thanks to Alex Engelberg and Kyle Kingsbury ([@aphyr](https://github.com/aphyr)) - the former helped me work on an EBNF grammar for Clojure, and the latter for writing [clj-antlr](https://github.com/aphyr/clj-antlr). Lastly, thanks to Reid Mckenzie, who authored the Clojure antlr v4 grammar upon which Glow's grammar is based.
 
 ## License
 
 Copyright © 2016 W. David Jarvis
 
-Distributed under the Eclipse Public License 1.0, the same as Clojure. Parts of the ANTLR code are covered by the BSD license.
+Distributed under the Eclipse Public License 1.0, the same as Clojure. Parts of the ANTLR code are covered by the BSD license, and the original grammar used for the parser is MIT-licensed. Sorry for giving you three licenses in one go.

@@ -1,12 +1,35 @@
-/*  
+/* Reworked for grammar specificity by Reid Mckenzie. Did a bunch of
+   work so that rather than reading "a bunch of crap in parens" some
+   syntactic information is preserved and recovered. Dec. 14 2014.
 
-    I took the grammar that was listed in the https://github.com/antlr/grammars-v4
-    repository and reworked the hell out of it. Without making any concrete
-    promises, this seems to deal reasonably well with a fairly decent volume
-    of core Clojure code, which makes me think it's in decent working form.
+   Converted to ANTLR 4 by Terence Parr. Unsure of provence. I see
+   it commited by matthias.koester for clojure-eclipse project on
+   Oct 5, 2009:
+
+   https://code.google.com/p/clojure-eclipse/
+
+   Seems to me Laurent Petit had a version of this. I also see
+   Jingguo Yao submitting a link to a now-dead github project on
+   Jan 1, 2011.
+
+   https://github.com/laurentpetit/ccw/tree/master/clojure-antlr-grammar
+
+   Regardless, there are some issues perhaps related to "sugar";
+   I've tried to fix them.
+
+   This parses https://github.com/weavejester/compojure project.
+
+   I also note this is hardly a grammar; more like "match a bunch of
+   crap in parens" but I guess that is LISP for you ;)
+*/
+
+/*
+    I took the grammar that Reid created in https://github.com/antlr/grammars-v4
+    and reworked the hell out of it. Without making any concrete promises, this
+    seems to deal reasonably well with a fairly decent volume of core Clojure
+    code, which makes me think it's in decent working form.
 
     ~ Venantius, August 16 2015.
-
  */
 
 grammar Clojure;
