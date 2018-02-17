@@ -50,3 +50,23 @@
 (defn bright-green
   [s]
   (str csi 92 suffix s reset-font))
+
+(defn bright-yellow
+  [s]
+  (str csi 93 suffix s reset-font))
+
+(defn bright-blue
+  [s]
+  (str csi 94 suffix s reset-font))
+
+(defn bright-magenta
+  [s]
+  (str csi 95 suffix s reset-font))
+
+(defn bright-cyan
+  [s]
+  (str csi 96 suffix s reset-font))
+
+(defn bright-white
+  [s]
+  (str csi 97 suffix s reset-font))

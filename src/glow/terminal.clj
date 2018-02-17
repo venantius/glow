@@ -10,8 +10,14 @@
    :blue ansi/blue
    :magenta ansi/magenta
    :cyan ansi/cyan
+   :white ansi/white
    :bright-red ansi/bright-red
    :bright-green ansi/bright-green
+   :bright-yellow ansi/bright-yellow
+   :bright-blue ansi/bright-blue
+   :bright-magenta ansi/bright-magenta
+   :bright-cyan ansi/bright-cyan
+   :bright-white ansi/bright-white
    :default str})
 
 (defn colorize
