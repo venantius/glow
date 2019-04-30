@@ -13,6 +13,7 @@ To use Glow in your project, just add the following to the `:dependencies` key o
 
 ```clojure
 [venantius/glow "0.1.6"]
+```
 
 ## Usage
 
