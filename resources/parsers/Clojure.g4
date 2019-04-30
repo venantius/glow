@@ -271,4 +271,4 @@ whitespace: WS;
 WS: [ \n\r\t,]+;
 
 comment: COMMENT_CHAR;
-COMMENT_CHAR: ';' ~[\n\r]+ '\n';
+COMMENT_CHAR: ';' ~[\n\r]+ ( '\n' | EOF );

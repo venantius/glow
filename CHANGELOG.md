@@ -1,3 +1,6 @@
+0.1.6
+ * Bugfix for single-line comment strings ending without a newline delimiter
+
 0.1.4
  * Upgrade clj-antlr to "0.2.3"
 

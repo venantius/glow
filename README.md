@@ -12,14 +12,7 @@ templates.
 To use Glow in your project, just add the following to the `:dependencies` key of your `project.clj`:
 
 ```clojure
-[venantius/glow "0.1.5"]
-```
-
-## Requirements
-
-Glow 0.1.4+ requires JDK 8+
-
-Glow 0.1.3 is the last version to support JDK 7.
+[venantius/glow "0.1.6"]
 
 ## Usage
 
@@ -96,6 +89,6 @@ I owe a big debt of gratitude to the authors, contributors and maintainers of [v
 
 ## License
 
-Copyright © 2017 W. David Jarvis
+Copyright © 2019 W. David Jarvis
 
 Distributed under the Eclipse Public License 1.0, the same as Clojure. Parts of the ANTLR code are covered by the BSD license, and the original grammar used for the parser is MIT-licensed. Sorry for giving you three licenses in one go.
