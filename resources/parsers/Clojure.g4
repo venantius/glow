@@ -262,6 +262,7 @@ SYMBOL_REST
     : SYMBOL_HEAD
     | '0'..'9'
     | '.'
+    | '\''
     ;
 
 // Whitespace, Comments
